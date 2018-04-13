@@ -60,4 +60,6 @@ functionBlock -> "{" zeroSpace (sequence | null) zeroSpace "}"
 
 sequence -> (lineCommands) zeroSpace sequence | (lineCommands)
 
-parameters -> id zeroSpace ":" zeroSpace type zeroSpace "," zeroSpace parameters | id zeroSpace ":" zeroSpace type
+parametersA -> id zeroSpace ":" zeroSpace type parametersB
+
+parametersB -> (zeroSpace "," zeroSpace parametersA):?
