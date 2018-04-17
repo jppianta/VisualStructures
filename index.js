@@ -1,12 +1,12 @@
 const nearley = require("nearley");
-const grammar = require("./grammar/test.js");
+const grammar = require("./grammar/grammar.js");
 const http = require('http');
 
 // Create a Parser object from our grammar.
 const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
 
 // Parse something!
-parser.feed("foo");
+parser.feed("x=2; x=3;");
 
 // parser.results is an array of possible parsings.
 console.log(JSON.stringify(parser.results)); // [[[[ "foo" ],"\n" ]]]
