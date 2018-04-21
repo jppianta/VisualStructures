@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jppianta/VisualStructures#readme",
   "dependencies": {
-    "nearley": "^2.13.0"
+    "pegjs": "^0.10.0",
+    "vis": "^4.21.0"
   }
 }
