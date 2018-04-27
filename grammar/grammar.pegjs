@@ -39,6 +39,19 @@ OneChar = [a-zA-Z]
 OneNumber = [0-9]
 Underline = '_'
 
+IdAtribbute = head:(Id) tail:('.' Id)* {
+	return [head].concat((tail).map(d => {
+    	return d[1]
+    })).map(d => {
+    	return {
+        	value: d
+        }
+    }).reduceRight((res, v) => {
+    	v.next = res
+        return v
+    })
+}
+
 Type = "int" / "float" / "void" / "string" / "bool" / "char" / "Node"
 
 Number = ch:OneNumber+ {
@@ -81,7 +94,7 @@ Node = "Node" _ '{' _ p:Parameters _ '}' {
     }
 }
 
-If = "if" _ '(' _ c:Condition _ ')' _ f:FunctionBlock _ e:ElseA {
+If = "if" _ '(' _ c:BoolOperation _ ')' _ f:FunctionBlock _ e:ElseA {
 	return {
     	operation: "if",
         condition: c,
@@ -94,7 +107,7 @@ ElseA = e:("else" _ ElseB)? { return e ? e[2] : null; }
 
 ElseB = If / FunctionBlock
 
-While = "while" _ '(' c:Condition ')' _ f:FunctionBlock {
+While = "while" _ '(' c:BoolOperation ')' _ f:FunctionBlock {
 	return {
     	operation: "while",
         condition: c,
