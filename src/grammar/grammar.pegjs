@@ -12,7 +12,7 @@ Functions = f:(Function _)* {
     })
 }
 
-LineCommand = atr:(Attribution) _ ";" {return atr}
+LineCommand = atr:(Declaration / Attribution) _ ";" {return atr}
 
 BlockCommand = If / While 
 
@@ -22,11 +22,20 @@ Commands = cHead:(LineCommand / BlockCommand) cTail:(_ (LineCommand / BlockComma
     }));
 }
 
-Attribution = vari:Id _ "=" _ val:(Id / Number) {
+Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Number) {
 	return {
-    	operation: "Attribution",
+        operation: "Declaration",
         variable: vari,
-        value: val
+        value: value,
+    	type: type	
+    }
+}
+
+Attribution = vari:IdRS _ '=' _ value:(IdRS / Number) {
+	return {
+        operation: "Attribution",
+        variable: vari,
+        value: value	
     }
 }
 
@@ -35,6 +44,25 @@ Id = head:(OneChar) tail:(OneChar / OneNumber / Underline)* {
     	return result+=ch;
     }) : "");
 }
+
+IdRS = head:Id tail:(RS)* 
+
+ArrayAccess = v:('[' Number ']') {
+	return {
+    	type: 'Array',
+        index: v[1]
+    }
+}
+
+ObjectAccess = r:('.' Id) {
+	return {
+    	type: 'Object',
+        name: r[1]
+    }
+}
+
+RS = (ArrayAccess / ObjectAccess)
+
 OneChar = [a-zA-Z]
 OneNumber = [0-9]
 Underline = '_'
@@ -72,18 +100,22 @@ BoolOperator = "&&" / "||" / "==" / "!="
 Condition = '(' _ b:BoolOperation _ ')' {
 	return b;
 }
-/ Bool 
-/ Id 
 
-BoolOperation = c1:Condition _1 op:BoolOperator _1 c2:Condition {
+BoolOperation = c1:(Bool / IdRS) _ op:BoolOperator _ c2:BoolOperation {
 	return {
     	operation: op,
         left: c1,
         right: c2
     }
 }
+/ Bool 
+/ IdRS
+/ '(' b:BoolOperation ')' {
+	return b;
+}
 
-Var = i:Id _ ':' _ t:Type _ v:("[]")? {
+
+Var = t:Type v:("[]")? _1 i:Id {
 	return [i,t+(v ? v : "")]
 }
 
