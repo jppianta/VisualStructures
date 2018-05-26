@@ -1,6 +1,15 @@
 <template>
+  <require from='./visualizer/visualizer'></require>
   <require from='./editor/editor'></require>
-  <div id='container' style.bind='styleObject'>
-    <editor></editor>
+  <div id='header' style.bind='styleLogoDiv'>
+    <img src='./images/logo.png' style.bind='styleLogo'>
+  </div>
+  <div id='container' style.bind='styleContainer'>
+    <div id='editorContainer' style.bind='styleEditor'>
+      <editor></editor>
+    </div>
+    <div id='visContainer' style.bind='styleVisualizer'>
+      <visualizer></visualizer>
+    </div>
   </div>
 </template>
