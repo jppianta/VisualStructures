@@ -1,0 +1,8 @@
+<template>
+    <div id='container' style.bind='styleContainer'>
+        <div id='errorContainer' style.bind='styleErrorContainer'>
+            <span if.bind='errorMessage !== ""' style.bind='styleErrorMessage'>${errorMessage}</span>
+        </div>
+        <button id='compile' type="button" style.bind='styleButton'>Compile</button>
+    </div>
+</template>
