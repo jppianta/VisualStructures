@@ -31,7 +31,7 @@ Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Number) {
     }
 }
 
-Attribution = vari:IdRS _ '=' _ value:(IdRS / Number) {
+Attribution = vari:IdRS _ '=' _ value:(IdRS / Number / Null) {
 	return {
         operation: "Attribution",
         variable: vari,
@@ -81,6 +81,8 @@ IdAtribbute = head:(Id) tail:('.' Id)* {
 }
 
 Type = "int" / "float" / "void" / "string" / "bool" / "char" / "Node"
+
+Null = 'null'
 
 Number = ch:OneNumber+ {
 	return ch.reduce((res, c) => {
