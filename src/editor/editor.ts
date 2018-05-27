@@ -1,9 +1,9 @@
 import { edit, config } from 'ace-builds/ace';
 
 export class Editor {
-    styleObject: object;
-    input: any;
-    ele: HTMLElement;
+    private styleObject: object;
+    private ele: HTMLElement;
+    private input;
 
     constructor() {
         this.styleObject = {
@@ -12,10 +12,15 @@ export class Editor {
         }
     }
 
-    attached() {
+    async attach() {
         this.ele = document.getElementById('input');
         this.input = edit(this.ele);
+        this.input.setShowPrintMargin(false);
         this.ele.addEventListener('onresize', onresize, false);
+    }
+
+    getInput() {
+        return this.input;
     }
 
     onresize() {

@@ -62,8 +62,12 @@ export class Visualizer {
         }
     }
 
-    attached() {
+    async attach() {
         this.ele = document.getElementById('visu');
         this.network = new Network(this.ele, this.createData(), this.options);
+    }
+
+    getNetwork() {
+        return this.network;
     }
 }

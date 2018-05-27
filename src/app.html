@@ -1,15 +1,22 @@
 <template>
   <require from='./visualizer/visualizer'></require>
   <require from='./editor/editor'></require>
+  <require from='./runBar/compile'></require>
+  <require from='./runBar/run'></require>
+
   <div id='header' style.bind='styleLogoDiv'>
     <img src='./images/logo.png' style.bind='styleLogo'>
   </div>
   <div id='container' style.bind='styleContainer'>
     <div id='editorContainer' style.bind='styleEditor'>
-      <editor></editor>
+      <editor editor.bind='editor'></editor>
     </div>
     <div id='visContainer' style.bind='styleVisualizer'>
       <visualizer></visualizer>
     </div>
+  </div>
+  <div id='barContainer' style.bind="styleBar">
+    <compile error-message.bind='errorMessage' click.trigger='onCompileClick()' style.bind='styleBarDiv'></compile>
+    <run functions.bind='functions' style.bind='styleBarDiv'></run>
   </div>
 </template>
