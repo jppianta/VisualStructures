@@ -27,7 +27,7 @@ export class App {
     this.initStyle();
     this.attachTools();
     this.errorMessage = '';
-    this.functions = [];
+    this.functions = ['Choose'];
   }
 
   initStyle() {
