@@ -3,6 +3,7 @@ import { inject } from 'aurelia-framework';
 import { Editor } from 'editor/editor';
 import { Visualizer } from 'visualizer/visualizer';
 import { IFunction } from './interfaces';
+import { Player } from './player';
 
 interface IProgram {
   attributions: object[],
@@ -22,6 +23,7 @@ export class App {
   private errorMessage: string;
   private functions: string[];
   private program: object;
+  private player: Player;
 
   constructor(private editor: Editor, private visualizer: Visualizer) {
     this.initStyle();
@@ -47,7 +49,7 @@ export class App {
     }
 
     this.styleContainer = {
-      'display': 'grid',
+      'display': 'flex',
       'grid-template-columns': '50% 50%'
     }
 
@@ -88,7 +90,9 @@ export class App {
   onCompileClick() {
     try {
       const result = parse(this.editor.getInput().getSession().getValue());
-      this.setFunctions(result.functions)
+      this.setFunctions(result.functions);
+      this.player = new Player(result);
+      this.player.setGlobal();
       this.errorMessage = '';
       console.log(result);
     } catch(error) {

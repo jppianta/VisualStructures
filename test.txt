@@ -1,0 +1,9 @@
+class LL {
+    Node {
+        int x
+    }
+    
+    Node root = null;
+    
+    root = 2; 
+}

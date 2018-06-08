@@ -45,7 +45,9 @@ Id = head:(OneChar) tail:(OneChar / OneNumber / Underline)* {
     }) : "");
 }
 
-IdRS = head:Id tail:(RS)* 
+IdRS = head:Id tail:(RS)* {
+    return tail === [] ? [head] : [head].concat(tail);
+}
 
 ArrayAccess = v:('[' Number ']') {
 	return {
