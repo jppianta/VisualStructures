@@ -248,7 +248,7 @@ function peg$parse(input, options) {
       peg$c48 = peg$literalExpectation("true", false),
       peg$c49 = "false",
       peg$c50 = peg$literalExpectation("false", false),
-      peg$c51 = function(b) { return Boolean(b)},
+      peg$c51 = function(b) { return b === 'true';},
       peg$c52 = "&&",
       peg$c53 = peg$literalExpectation("&&", false),
       peg$c54 = "||",

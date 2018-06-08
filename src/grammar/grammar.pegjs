@@ -97,7 +97,7 @@ _ "whitespace"
               
 _1 = [ \t\n\r]+
 
-Bool = b:("true" / "false") { return Boolean(b)}
+Bool = b:("true" / "false") { return b === 'true';}
 
 BoolOperator = "&&" / "||" / "==" / "!="
 
