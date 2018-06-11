@@ -10,13 +10,11 @@ export class Editor {
             'width': '100%',
             'height': '100%' 
         }
-        // config.set('modePath', '/VisualStructures');
     }
 
     async attach() {
         this.ele = document.getElementById('input');
         this.input = edit(this.ele);
-        this.input.setMode('/VisualStructures/typescript');
         this.input.setShowPrintMargin(false);
         this.ele.addEventListener('onresize', onresize, false);
     }
