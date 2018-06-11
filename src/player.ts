@@ -12,7 +12,8 @@ export class Player {
     executeFunction(functionName) {
         const fun = this.getFunction(functionName);
         if (fun) {
-            this.addScope({});
+            const scope = fun.parameters ? this.createFunctionScope(fun)(2, 3) : {};
+            this.addScope(scope);
             this.executeBlock(fun.block);
             this.scope.pop();
         }
@@ -32,7 +33,7 @@ export class Player {
     private setGlobal() {
         this.scope = [];
         this.addScope(this.code);
-        this.scope[0]['Node'] = this.createNodeConstructor();
+        this.scope[0]['Node'] = this.createFunctionScope(this.code.node);
         console.log(this.scope);
     }
 
@@ -142,8 +143,8 @@ export class Player {
         return false;
     }
 
-    private createNodeConstructor() {
-        const parameters = this.parseParameters(this.code.node.parameters);
+    private createFunctionScope(fun) {
+        const parameters = this.parseParameters(fun.parameters);
         const keys = Object.keys(parameters);
         return (...values) => {
             for (let i=0; i<keys.length; i++) {
