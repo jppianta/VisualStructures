@@ -2,14 +2,9 @@ import { parse } from './grammar/grammar';
 import { inject } from 'aurelia-framework';
 import { Editor } from 'editor/editor';
 import { Visualizer } from 'visualizer/visualizer';
-import { IFunction } from './interfaces';
+import { IClass, IFunction } from './interfaces';
 import { Player } from './player';
 
-interface IProgram {
-  attributions: object[],
-  functions: object[],
-
-}
 
 @inject(Editor, Visualizer)
 export class App {
@@ -17,19 +12,19 @@ export class App {
   styleEditor:object
   styleContainer:object;
   styleLogo: object;
+  styleButton: object;
+  styleBar: object;
   styleLogoDiv: object;
-  styleBar:object;
-  styleBarDiv: object;
+  private selected: string;
   private errorMessage: string;
-  private functions: string[];
-  private program: object;
+  private functions: IFunction[];
   private player: Player;
 
   constructor(private editor: Editor, private visualizer: Visualizer) {
     this.initStyle();
     this.attachTools();
     this.errorMessage = '';
-    this.functions = ['Choose'];
+    this.functions = [];
   }
 
   initStyle() {
@@ -71,6 +66,10 @@ export class App {
       'height': '4vh',
     }
 
+    this.styleButton = {
+      'float': 'left'
+    }
+
   }
 
   async attachTools() {
@@ -80,23 +79,21 @@ export class App {
     }, 0)
   }
 
-  setFunctions(funcs: IFunction[]) {
-    this.functions = [];
-    funcs.forEach(f => {
-      this.functions.push(f.name);
-    });
-  }
-
   onCompileClick() {
     try {
       const result = parse(this.editor.getInput().getSession().getValue());
-      this.setFunctions(result.functions);
+      this.functions = result.functions;
       this.player = new Player(result);
-      this.player.setGlobal();
       this.errorMessage = '';
       console.log(result);
     } catch(error) {
       this.errorMessage = error.message;
     }    
+  }
+
+  play() {
+    if (this.player && this.selected) {
+      this.player.executeFunction(this.selected);
+    }
   }
 }

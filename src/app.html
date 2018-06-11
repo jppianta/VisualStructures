@@ -2,7 +2,7 @@
   <require from='./visualizer/visualizer'></require>
   <require from='./editor/editor'></require>
   <require from='./runBar/compile'></require>
-  <require from='./runBar/run'></require>
+  <require from='./runBar/function-panel'></require>
 
   <div id='header' style.bind='styleLogoDiv'>
     <img src='./images/logo.png' style.bind='styleLogo'>
@@ -16,7 +16,8 @@
     </div>
   </div>
   <div id='barContainer' style.bind="styleBar">
-    <compile error-message.bind='errorMessage' click.trigger='onCompileClick()' style.bind='styleBarDiv'></compile>
-    <run functions.bind='functions' style.bind='styleBarDiv'></run>
+    <compile error-message.bind='errorMessage' click.trigger='onCompileClick()'></compile>
+    <function-panel selected.two-way='selected' functions.bind='functions'></function-panel>
+    <button click.trigger="play()" style.bind='styleButton'>Play</button>
   </div>
 </template>

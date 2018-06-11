@@ -82,7 +82,7 @@ IdAtribbute = head:(Id) tail:('.' Id)* {
     })
 }
 
-Type = "int" / "float" / "void" / "string" / "bool" / "char" / "Node"
+Type = 'number' / "void" / "string" / "bool" / "char" / "Node"
 
 Null = 'null'
 
@@ -97,7 +97,7 @@ _ "whitespace"
               
 _1 = [ \t\n\r]+
 
-Bool = b:("true" / "false") { return b === 'true';}
+Bool = b:("true" / "false") { return b; }
 
 BoolOperator = "&&" / "||" / "==" / "!="
 
