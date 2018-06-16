@@ -83,9 +83,8 @@ export class App {
     try {
       const result = parse(this.editor.getInput().getSession().getValue());
       this.functions = result.functions;
-      this.player = new Player(result);
-      this.errorMessage = '';
-      console.log(result);
+      this.player = new Player(result, this.visualizer);
+      this.errorMessage = 'Compile Success';
     } catch(error) {
       this.errorMessage = error.message;
     }    

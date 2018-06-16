@@ -3,17 +3,10 @@ class LL {
         number x
     }
     
-    number root = 3;
+    Node root = Node(3);
     
-    root = 2; 
 
     fun add(): void {
-        number x = 2;
-
-        if (true || (false && true)) {
-            x = 3;
-        } else {
-            x = 4;
-        }
+        Node x = Node(2);
     }
 }

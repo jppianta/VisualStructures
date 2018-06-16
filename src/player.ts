@@ -1,11 +1,16 @@
+import { IDataStep } from './interfaces';
+
 export class Player {
     scope: object[] = [{}];
+    steps: IDataStep[] = [];
+
     private typeParse = {
-        'number': this.parseNumber,
-        'boolean': this.parseBool
+        'number': this.parseNumber.bind(this),
+        'boolean': this.parseBool.bind(this),
+        'Node': this.parseNode.bind(this)
     }
     
-    constructor(private code: any) { 
+    constructor(private code: any, private visualizer: any) { 
         this.setGlobal();
     }
 
@@ -19,6 +24,47 @@ export class Player {
         }
     } 
 
+    private createStepFromNode(node) {
+        let cont = 0;
+        let currentNodeCont = cont;
+        const data = {
+            nodes: [{id: cont, label: String(cont), prop: node.value}],
+            edges: []
+        } as IDataStep;
+        cont++;
+        const nodes = [node];
+        while (nodes.length > 0) {
+            const currentNode = nodes.splice(0, 1)[0];
+            currentNodeCont++;
+            const keys = Object.keys(currentNode);
+            keys.forEach(key => {
+                if (currentNode[key].type === 'Node array') {
+                    currentNode[key].value.forEach(n => {
+                        data.nodes.push({id: cont, label: String(cont), prop: n});
+                        data.edges.push({from: currentNodeCont, to: cont});
+                        nodes.push(n);
+                        cont++;
+                    });
+                }
+            });
+        }
+        return data;
+    }
+
+    private findGlobalNode() {
+        const global = this.scope[1];
+        const keys = Object.keys(global);
+        let result;
+        keys.some(key => {
+            if (global[key].type === 'Node') {
+                result = global[key];
+                return true;
+            }
+            return false;
+        });
+        return result;
+    }
+
     private getFunction(functionName) {
         let result;
         this.code.functions.some(fun => {
@@ -31,9 +77,8 @@ export class Player {
     }
     
     private setGlobal() {
-        this.scope = [];
-        this.addScope(this.code);
         this.scope[0]['Node'] = this.createFunctionScope(this.code.node);
+        this.addScope(this.code);
         console.log(this.scope);
     }
 
@@ -71,6 +116,11 @@ export class Player {
                 case 'while':
                     this.handleWhile(op);
                     break;
+            }
+            const node = this.findGlobalNode();
+            if (node) {
+                const step = this.createStepFromNode(node);
+                this.visualizer.editData(step);
             }
         });
     }
@@ -148,7 +198,7 @@ export class Player {
         const keys = Object.keys(parameters);
         return (...values) => {
             for (let i=0; i<keys.length; i++) {
-                parameters[keys[i]].value = values[i];
+                parameters[keys[i]].value = values[i] && this.typeParse[parameters[keys[i]].type](values[i]);
             }
             return parameters;
         };
@@ -163,6 +213,22 @@ export class Player {
             }
         });
         return result;
+    }
+
+    private parseNode(node) {
+        const type = node[0];
+        const parameters = node[1] && node[1].parameters;
+        if (type !== 'Node') {
+            console.error(`${parameters} not a Node`);
+            return;
+        }
+        if (!Array.isArray(parameters)) {
+            if (!(parameters === null)) {
+                console.error(`${parameters} not a Node`);
+                return;
+            }
+        }
+        return this.scope[0]['Node'](parameters);
     }
 
     private parseNumber(value) {

@@ -30,3 +30,8 @@ export interface IClass {
     functions: IFunction[],
     attributions: (IDeclaration | IAttribution)[]
 }
+
+export interface IDataStep {
+    nodes,
+    edges
+}
