@@ -49,10 +49,10 @@ IdRS = head:Id tail:(RS)* {
     return tail === [] ? [head] : [head].concat(tail);
 }
 
-ArrayAccess = v:('[' Number ']') {
+ArrayAccess = '[' _ n: Number _ ']' {
 	return {
     	type: 'Array',
-        index: v[1]
+        index: n
     }
 }
 
@@ -63,7 +63,16 @@ ObjectAccess = r:('.' Id) {
     }
 }
 
-RS = (ArrayAccess / ObjectAccess)
+FunctionAccess = '(' _ v: ((IdRS / Number / Null) (',' _ (IdRS / Number / Null))*)? _ ')' {
+	return {
+    	type: 'Function',
+        parameters: [v[0]].concat(v[1].map(d => {
+        	return d[2]
+        }))
+    }
+}
+
+RS = (ArrayAccess / ObjectAccess / FunctionAccess)
 
 OneChar = [a-zA-Z]
 OneNumber = [0-9]
