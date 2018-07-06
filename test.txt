@@ -1,12 +1,13 @@
 class LL {
     Node {
-        number x
+        number x,
+        Node next
     }
     
     Node root = Node(3);
     
 
     fun add(): void {
-        Node x = Node(2);
+        root.next = Node(4);
     }
 }

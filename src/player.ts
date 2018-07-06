@@ -35,18 +35,23 @@ export class Player {
         const nodes = [node];
         while (nodes.length > 0) {
             const currentNode = nodes.splice(0, 1)[0];
-            currentNodeCont++;
-            const keys = Object.keys(currentNode);
+            const keys = currentNode && Object.keys(currentNode.value);
             keys.forEach(key => {
-                if (currentNode[key].type === 'Node array') {
-                    currentNode[key].value.forEach(n => {
+                if (currentNode.value[key].type === 'Node array') {
+                    currentNode.value[key].value.forEach(n => {
                         data.nodes.push({id: cont, label: String(cont), prop: n});
-                        data.edges.push({from: currentNodeCont, to: cont});
+                        data.edges.push({from: currentNodeCont, to: cont, arrows:'to'});
                         nodes.push(n);
                         cont++;
                     });
+                } else if (currentNode.value[key].type === 'Node' && currentNode.value[key].value !== null) {
+                    data.nodes.push({id: cont, label: String(cont), prop: currentNode.value[key]});
+                    data.edges.push({from: currentNodeCont, to: cont, arrows:'to'});
+                    nodes.push(currentNode.value[key]);
+                    cont++;
                 }
             });
+            currentNodeCont++;
         }
         return data;
     }
@@ -125,6 +130,36 @@ export class Player {
         });
     }
 
+    private getVarFromArray(com, scope) {
+        let ret = scope[com.variable[0]];
+        if (!ret) {
+            for (let i = this.scope.length - 1; i >= 0; i--) {
+                ret = this.scope[i][com.variable[0]];
+                if (ret) {
+                    break;
+                }
+            }
+            if (!ret) {
+                console.error(`Variable ${com.variable} not declared`);
+            }
+        }
+        const rest = com.variable.slice(1);
+        rest.forEach(element => {
+            if (element.type === 'Object') {
+                ret = ret.value.type === 'Node' ? ret.value.value[element.name] : ret.value[element.name];
+                if (!ret) {
+                    console.error(`Property ${element.name} not found`);
+                }
+            } else if (element.type === 'Array') {
+                ret = ret.value[this.parseNumber(element.index)];
+                if (!ret) {
+                    console.error(`Index ${element.index} not found`);
+                }
+            }
+        });
+        return ret;
+    }
+
     private handleDeclaration(com, scope) {
         if (scope[com.variable]) {
             console.error(`Variable ${com.variable} already declared`);
@@ -134,13 +169,15 @@ export class Player {
     }
 
     private handleAttribution(com, scope) {
-        if (scope[com.variable]) {
+        let memValue = com.variable instanceof Array ? this.getVarFromArray(com, scope) : scope[com.variable];
+        if (memValue) {
             if (this.handleParse(com, scope)) {
                 return;
             }
         }
         for (let i = this.scope.length - 1; i >= 0; i--) {
-            if (this.scope[i][com.variable]) {
+            memValue = com.variable instanceof Array ? this.getVarFromArray(com, this.scope[i]) : this.scope[i][com.variable];
+            if (memValue) {
                 if (this.handleParse(com, this.scope[i])) {
                     return;
                 }
@@ -177,8 +214,10 @@ export class Player {
     }
 
     private handleParse(com, scope, dec = false) {
-        const memValue = scope[com.variable];
-        const parsedValue = dec ? this.typeParse[com.type](com.value) : this.typeParse[memValue.type](com.value);
+        const memValue = com.variable instanceof Array ? this.getVarFromArray(com, scope) : scope[com.variable];
+        const parsedValue = dec ? 
+            this.typeParse[com.type](com.value) : 
+            this.typeParse[memValue.type](com.value);
         if (parsedValue) {
             if (dec) {
                 scope[com.variable] = {
@@ -187,7 +226,7 @@ export class Player {
                 };
                 return true;
             }
-            scope[com.variable].value = parsedValue;
+            memValue.value = parsedValue;
             return true;
         }
         return false;
@@ -198,9 +237,9 @@ export class Player {
         const keys = Object.keys(parameters);
         return (...values) => {
             for (let i=0; i<keys.length; i++) {
-                parameters[keys[i]].value = values[i] && this.typeParse[parameters[keys[i]].type](values[i]);
+                parameters[keys[i]].value = values[i] ? this.typeParse[parameters[keys[i]].type](values[i]) : null;
             }
-            return parameters;
+            return JSON.parse(JSON.stringify(parameters));
         };
     }
 
