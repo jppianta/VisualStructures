@@ -1,3 +1,15 @@
+{
+	function parseOperation(op, c1, c2) {
+    	const operators = {
+        	'+': (d1, d2) => d1+d2,
+            '-': (d1, d2) => d1-d2,
+            '*': (d1, d2) => d1*d2,
+            '/': (d1, d2) => d1/d2,
+        }
+        return String(operators[op](c1,c2));
+    }
+}
+
 M = Class
 
 LineCommands = l:(LineCommand _)* {
@@ -99,6 +111,22 @@ Number = ch:OneNumber+ {
 	return ch.reduce((res, c) => {
     	return res+=c;
     })
+}
+
+NumberOperator1 = '+' / '-'
+NumberOperator2 = '*' / '/'
+
+NumberOperation = c1:(Number / IdRS) _ op:NumberOperator1 _ c2:NumberOperation {
+    return Number(c1) && Number(c2) ? parseOperation(op, Number(c1), Number(c2)) : {
+    	operation: op,
+        left: c1,
+        right: c2
+    }
+}
+/ Number
+/ IdRS
+/ '(' _ n:NumberOperation _ ')' {
+	return n;
 }
 
 _ "whitespace"
