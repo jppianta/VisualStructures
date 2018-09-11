@@ -18,6 +18,7 @@ export class AceEditor extends Component {
     }
 
     componentDidMount() {
+        config.set('basePath', '../');
         this.editor = edit('ace-container');
         this.editor.setTheme('ace/theme/tomorrow_night');
         this.editor.getSession().setUseWorker(false);
