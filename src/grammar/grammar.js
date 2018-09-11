@@ -4,6 +4,8 @@
  * http://pegjs.org/
  */
 
+/* eslint-disable */
+
 "use strict";
 
 function peg$subclass(child, parent) {
