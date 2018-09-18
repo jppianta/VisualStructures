@@ -83,6 +83,7 @@ export class Interpreter {
     }
 
     setGlobal() {
+        this.scope = [{}];
         this.scope[0]['Node'] = this.createFunctionScope(this.code.node);
         this.addScope(this.code);
     }
