@@ -12,12 +12,14 @@ export class EditorPanel extends Component {
         this.events.add('textChanged', this.textChanged);
         this.text = '';
         this.error = undefined;
+        this.errorLocation = undefined;
         this.style = {
             flex: 1,
             flexDirection: 'column'
         }
         this.state = {
-            error: ''
+            error: '',
+            errorLocation: ''
         };
         this.updateCode = props.updateCode;
     }
@@ -33,15 +35,22 @@ export class EditorPanel extends Component {
             this.updateCode(parsed);
             this.error = 'Compiled!';
         } catch (err) {
-            this.error = err.message;
+            this.parseErrorMessage(err);
         } finally {
             this.setErrorMessage();
         }
     }
 
+    parseErrorMessage(error) {
+        this.error = error.name + ': ' + error.message;
+        this.errorLocation = `Line ${error.location.start.line}, Column ${error.location.start.column}`;
+        this.setErrorMessage();
+    }
+
     setErrorMessage() {
         this.setState(state => ({
-            error: this.error
+            error: this.error,
+            errorLocation: this.errorLocation
         }));
     }
 
@@ -53,6 +62,7 @@ export class EditorPanel extends Component {
                 />
                 <EditorBar 
                     errorText = {this.state.error}
+                    errorLocation = {this.state.errorLocation}
                 />
             </div>
         );
