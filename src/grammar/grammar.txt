@@ -1,0 +1,87 @@
+Class = "class" _ i:Id _ '{' _ n:Node _ l:LineCommands _ f:Functions _ '}'
+
+_ "whitespace" = [ \t\n\r]*
+              
+_1 = [ \t\n\r]+
+
+Id = head:(OneChar) tail:(OneChar / OneNumber / Underline)*
+
+OneChar = [a-zA-Z]
+
+OneNumber = [0-9]
+
+Underline = '_'
+
+Node = "Node" _ '{' _ p:Parameters _ '}'
+
+Parameters = vHead:(Var) vTail:(_ ',' _ Var)* 
+
+Var = t:Type v:("[]")? _1 i:Id
+
+Type = 'number' / "void" / "string" / "bool" / "char" / "Node"
+
+LineCommands = l:(LineCommand _)*
+
+LineCommand = atr:(Declaration / Attribution) _ ";"
+
+Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Expression)
+
+IdRS = head:Id tail:(RS)*
+
+RS = (ArrayAccess / ObjectAccess / FunctionAccess)
+
+ArrayAccess = '[' _ n: Expression _ ']'
+
+ObjectAccess = r:('.' Id)
+
+FunctionAccess = '(' _ v: ((IdRS / Expression / Null) (',' _ (IdRS / Expression / Null))*)? _ ')'
+
+Null = 'null'
+
+Expression = head:Term tail:(_ NumberOperator1 _ Term)*
+
+Term = head:Factor tail:(_ NumberOperator2 _ Factor)*
+
+Factor = "(" _ expr:Expression _ ")" / Number / IdRS
+
+NumberOperator1 = '+' / '-'
+
+NumberOperator2 = '*' / '/'
+
+Number = ch:OneNumber+
+
+Function = "fun" _1 i:Id _ '(' _ p:Parameters? _ ')' _ ':' _ t:Type _ f:FunctionBlock
+
+FunctionBlock = '{' _ c:Commands? _ '}'
+
+Commands = cHead:(LineCommand / BlockCommand) cTail:(_ (LineCommand / BlockCommand))*
+
+BlockCommand = If / While
+
+If = "if" _ c:Condition _ f:FunctionBlock _ e:ElseA
+
+Condition = '(' _ b:(BoolOperation / CompareOperation) _ ')'
+
+BoolOperation = c1:BoolFactor _ tail:BoolOperation2?
+
+BoolFactor = Bool / IdRS / '(' _ b:BoolOperation _ ')' 
+
+BoolOperation2 = op:(BoolOperator / EqualityOperator) _ c2:BoolOperation
+
+BoolOperator = "&&" / "||"
+
+EqualityOperator = "==" / "!="
+
+CompareOperation = exp1:Expression _ op:Compares _ exp2:Expression
+
+Compares = op:CompareOperators eq:Equals?
+
+CompareOperators = '>' / '<'
+
+Equals = '='
+
+ElseA = e:("else" _ ElseB)?
+
+ElseB = If / FunctionBlock
+
+While = "while" _ c:Condition _ f:FunctionBlock
