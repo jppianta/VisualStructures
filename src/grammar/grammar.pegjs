@@ -1,5 +1,7 @@
 {
 	function parseOperation(op, c1, c2) {
+    	c1 = Number(c1);
+        c2 = Number(c2);
     	const operators = {
         	'+': (d1, d2) => d1+d2,
             '-': (d1, d2) => d1-d2,
@@ -34,7 +36,7 @@ Commands = cHead:(LineCommand / BlockCommand) cTail:(_ (LineCommand / BlockComma
     }));
 }
 
-Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Number) {
+Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Expression) {
 	return {
         operation: "Declaration",
         variable: vari,
@@ -43,7 +45,7 @@ Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Number) {
     }
 }
 
-Attribution = vari:IdRS _ '=' _ value:(IdRS / Number / Null) {
+Attribution = vari:IdRS _ '=' _ value:(IdRS / Expression / Null) {
 	return {
         operation: "Attribution",
         variable: vari,
@@ -61,7 +63,7 @@ IdRS = head:Id tail:(RS)* {
     return tail === [] ? [head] : [head].concat(tail);
 }
 
-ArrayAccess = '[' _ n: Number _ ']' {
+ArrayAccess = '[' _ n: Expression _ ']' {
 	return {
     	type: 'Array',
         index: n
@@ -75,7 +77,7 @@ ObjectAccess = r:('.' Id) {
     }
 }
 
-FunctionAccess = '(' _ v: ((IdRS / Number / Null) (',' _ (IdRS / Number / Null))*)? _ ')' {
+FunctionAccess = '(' _ v: ((IdRS / Expression / Null) (',' _ (IdRS / Expression / Null))*)? _ ')' {
 	return {
     	type: 'Function',
         parameters: [v[0]].concat(v[1].map(d => {
@@ -107,6 +109,39 @@ Type = 'number' / "void" / "string" / "bool" / "char" / "Node"
 
 Null = 'null'
 
+Expression
+  = head:Term tail:(_ NumberOperator1 _ Term)* {
+      return tail.reduce(function(result, element) {
+      	const left = result;
+        const right = element[3];
+        const op = element[1];
+        return Number(left) && Number(right) ? parseOperation(element[1], result, element[3]) : {
+        	operation: op,
+            left,
+            right
+        };
+      }, head);
+    }
+
+Term
+  = head:Factor tail:(_ NumberOperator2 _ Factor)* {
+      return tail.reduce(function(result, element) {
+      	const left = result;
+        const right = element[3];
+        const op = element[1];
+        return Number(left) && Number(right) ? parseOperation(element[1], result, element[3]) : {
+        	operation: op,
+            left,
+            right
+        };
+      }, head);
+    }
+
+Factor
+  = "(" _ expr:Expression _ ")" { return expr; }
+  / Number
+  / IdRS
+
 Number = ch:OneNumber+ {
 	return ch.reduce((res, c) => {
     	return res+=c;
@@ -116,18 +151,18 @@ Number = ch:OneNumber+ {
 NumberOperator1 = '+' / '-'
 NumberOperator2 = '*' / '/'
 
-NumberOperation = c1:(Number / IdRS) _ op:NumberOperator1 _ c2:NumberOperation {
-    return Number(c1) && Number(c2) ? parseOperation(op, Number(c1), Number(c2)) : {
-    	operation: op,
-        left: c1,
-        right: c2
+Compares = op:CompareOperators eq:Equals? { return eq ? op + eq : op }
+CompareOperators = '>' / '<'
+Equals = '='
+
+CompareOperation = exp1:Expression _ op:Compares _ exp2:Expression {
+    return {
+        operation: op,
+        left: exp1,
+        right: exp2
     }
 }
-/ Number
-/ IdRS
-/ '(' _ n:NumberOperation _ ')' {
-	return n;
-}
+/ '(' _ b: CompareOperation _ ')' { return b }
 
 _ "whitespace"
   = [ \t\n\r]*
@@ -136,22 +171,26 @@ _1 = [ \t\n\r]+
 
 Bool = b:("true" / "false") { return b; }
 
-BoolOperator = "&&" / "||" / "==" / "!="
+BoolOperator = "&&" / "||"
 
-Condition = '(' _ b:BoolOperation _ ')' {
+EqualityOperators = "==" / "!="
+
+Condition = '(' _ b:(BoolOperation / CompareOperation) _ ')' {
 	return b;
 }
 
-BoolOperation = c1:(Bool / IdRS) _ op:BoolOperator _ c2:BoolOperation {
-	return {
-    	operation: op,
-        left: c1,
+BoolOperation = c1: BoolFactor _ tail:BoolOperation2? {
+    return tail ? Object.assign({left: c1}, tail) : c1
+}
+
+BoolOperation2 = op:(BoolOperator / EqualityOperators) _ c2:BoolOperation {
+    return {
+        operation: op,
         right: c2
     }
 }
-/ Bool 
-/ IdRS
-/ '(' b:BoolOperation ')' {
+
+BoolFactor = Bool / IdRS / '(' _ b:BoolOperation _ ')' {
 	return b;
 }
 
@@ -167,7 +206,7 @@ Node = "Node" _ '{' _ p:Parameters _ '}' {
     }
 }
 
-If = "if" _ '(' _ c:BoolOperation _ ')' _ f:FunctionBlock _ e:ElseA {
+If = "if" _ c:Condition _ f:FunctionBlock _ e:ElseA {
 	return {
     	operation: "if",
         condition: c,
@@ -180,7 +219,7 @@ ElseA = e:("else" _ ElseB)? { return e ? e[2] : null; }
 
 ElseB = If / FunctionBlock
 
-While = "while" _ '(' c:BoolOperation ')' _ f:FunctionBlock {
+While = "while" _ c:Condition _ f:FunctionBlock {
 	return {
     	operation: "while",
         condition: c,
