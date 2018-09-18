@@ -19,7 +19,7 @@ export class AceEditor extends Component {
 
     componentDidMount() {
         this.editor = edit('ace-container');
-        config.set('basePath', '/VisualStructures/lib/');
+        config.set('basePath', '/VisualStructures/lib/ace/');
         this.editor.setTheme('ace/theme/tomorrow_night');
         this.editor.getSession().setUseWorker(false);
         this.editor.setOptions({
