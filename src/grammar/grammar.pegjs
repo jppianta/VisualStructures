@@ -80,9 +80,9 @@ ObjectAccess = r:('.' Id) {
 FunctionAccess = '(' _ v: ((IdRS / Expression / Null) (',' _ (IdRS / Expression / Null))*)? _ ')' {
 	return {
     	type: 'Function',
-        parameters: [v[0]].concat(v[1].map(d => {
+        parameters: v ? [v[0]].concat(v[1].map(d => {
         	return d[2]
-        }))
+        })) : []
     }
 }
 

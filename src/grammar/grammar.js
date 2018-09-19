@@ -211,9 +211,9 @@ function peg$parse(input, options) {
       peg$c26 = function(v) {
       	return {
           	type: 'Function',
-              parameters: [v[0]].concat(v[1].map(d => {
+              parameters: v ? [v[0]].concat(v[1].map(d => {
               	return d[2]
-              }))
+              })) : []
           }
       },
       peg$c27 = /^[a-zA-Z]/,
