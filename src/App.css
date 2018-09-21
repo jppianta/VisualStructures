@@ -1,7 +1,88 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+
 .App {
   background-color: #1D1F21;
   text-align: center;
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+/* Panels */
+
+.MainPanel {
+  display: flex;
+  height: 100%;
+  margin-top: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.EditorPanel {
+  flex: 1;
+  flex-direction: column;
+}
+
+.VisualizerPanel {
+  flex: 1;
+  flex-direction: column;
+}
+
+/* Bars */
+
+.EditorBar {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: monaco;
+  font-size: 12px;
+}
+
+.EditorBar div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.EditorBar div span {
+  color: #e5ffff;
+}
+
+.EditorBar .TextDiv {
+  justify-content: flex-start;
+}
+
+.EditorBar .LocationDiv {
+  justify-content: flex-end;
+}
+
+.header img {
+  height: 8%;
+  max-height: 80px;
+  margin-top: 15px;
+}
+
+.VisualizerBar {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Outsiders */
+
+.Ace {
+  height: 90%;
+  border-radius: 5px;
+}
+
+.Visualizer {
+  height: 90%;
 }

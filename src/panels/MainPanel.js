@@ -7,14 +7,6 @@ export class MainPanel extends Component {
     constructor(props) {
         super(props);
 
-        this.style = {
-            display: 'flex',
-            height: '100%',
-            marginTop: '15px',
-            marginLeft: '15px',
-            marginRight: '15px'
-        };
-
         this.state = {
             items: [
                 <option key='None' value='None'>None</option>
@@ -52,7 +44,7 @@ export class MainPanel extends Component {
 
     render() {
         return (
-            <div style={this.style}>
+            <div className="MainPanel">
                 <EditorPanel updateCode={this.updateCode.bind(this)}/>
                 <VisualizerPanel items={this.state.items} executeFunction={this.executeFunction.bind(this)}/>
             </div>

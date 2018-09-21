@@ -10,9 +10,6 @@ export class Visualizer extends Component {
 
         this.events.add('newStep', this.updateNetwork.bind(this));
 
-        this.style = {
-            height: '90%'
-        }
         this.visualizer = undefined;
 
         this.nodeColors = {
@@ -56,7 +53,7 @@ export class Visualizer extends Component {
 
     render() {
         return (
-            <div id='vis-container' style={this.style}></div>
+            <div id='vis-container' className="Visualizer"></div>
         );
     }
 }

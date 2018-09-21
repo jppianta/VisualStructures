@@ -8,10 +8,6 @@ export class AceEditor extends Component {
 
         this.events = events.getInstance();
 
-        this.style = {
-            height: '90%',
-            borderRadius: '5px'
-        }
         this.editor = undefined;
         this.text = '';
         this.panelCallback = props.panelCallback;
@@ -34,7 +30,7 @@ export class AceEditor extends Component {
 
     render() {
         return (
-            <div id='ace-container' style={this.style}></div>
+            <div id='ace-container' className="Ace"></div>
         );
     }
 }

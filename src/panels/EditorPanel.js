@@ -13,10 +13,7 @@ export class EditorPanel extends Component {
         this.text = '';
         this.error = undefined;
         this.errorLocation = undefined;
-        this.style = {
-            flex: 1,
-            flexDirection: 'column'
-        }
+
         this.state = {
             error: '',
             errorLocation: ''
@@ -56,7 +53,7 @@ export class EditorPanel extends Component {
 
     render() {
         return (
-            <div style = {this.style}>
+            <div className="EditorPanel">
                 <AceEditor 
                     panelCallback = {this.textChanged.bind(this)}   
                 />

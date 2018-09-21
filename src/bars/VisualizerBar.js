@@ -34,7 +34,7 @@ export class VisualizerBar extends Component {
 
     render() {
         return (
-            <div style={this.style}>
+            <div className="VisualizerBar">
                 <select value={this.state.value} onChange={this.handleChange}>
                     {this.props.items}
                 </select>
