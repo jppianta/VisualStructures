@@ -155,7 +155,7 @@ Compares = op:CompareOperators eq:Equals? { return eq ? op + eq : op }
 CompareOperators = '>' / '<'
 Equals = '='
 
-CompareOperation = exp1:Expression _ op:Compares _ exp2:Expression {
+CompareOperation = exp1:Expression _ op:(Compares) _ exp2:Expression {
     return {
         operation: op,
         left: exp1,
@@ -175,7 +175,18 @@ BoolOperator = "&&" / "||"
 
 EqualityOperators = "==" / "!="
 
-Condition = '(' _ b:(BoolOperation / CompareOperation) _ ')' {
+EqualityOperation = c1:(BoolFactor / Expression / IdRS) _ tail:EqualityOperation2? {
+    return tail ? Object.assign({left: c1}, tail) : c1
+}
+
+EqualityOperation2 = op:EqualityOperators c2:EqualityOperation {
+    return {
+        operation: op,
+        right: c2
+    }
+}
+
+Condition = '(' _ b:(EqualityOperation / CompareOperation / BoolOperation) _ ')' {
 	return b;
 }
 
@@ -183,7 +194,7 @@ BoolOperation = c1: BoolFactor _ tail:BoolOperation2? {
     return tail ? Object.assign({left: c1}, tail) : c1
 }
 
-BoolOperation2 = op:(BoolOperator / EqualityOperators) _ c2:BoolOperation {
+BoolOperation2 = op:(BoolOperator) _ c2:BoolOperation {
     return {
         operation: op,
         right: c2
@@ -251,7 +262,7 @@ Parameters = vHead:(Var) vTail:(_ ',' _ Var)* {
     })
 }
 
-Class = "class" _ i:Id _ '{' _ n:Node _ l:LineCommands _ f:Functions _ '}' {
+Class = "class" _ i:Id _ '{' _ n:Node _ l:LineCommands _ f:Functions _ '}' _ {
 	return { 
     	operation: "class",
     	node: n,
