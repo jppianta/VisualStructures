@@ -1,0 +1,13 @@
+class LL {
+    Node {
+        number x,
+        Node next
+    }
+    
+    Node root  = Node(2);
+    
+    fun add():void {
+        Node aux = Node(3);
+        root.next = aux;
+    }
+}
