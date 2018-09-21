@@ -28,7 +28,7 @@ export class VisualizerBar extends Component {
 
     runFunction = () => {
         if (this.state.value !== 'None') {
-            this.executeFunction(this.state.value);
+            this.executeFunction(this.state.value, true);
         }
     }
 
