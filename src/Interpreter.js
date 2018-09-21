@@ -21,7 +21,10 @@ export class Interpreter {
         this.setGlobal();
     }
 
-    executeFunction(functionName) {
+    executeFunction(functionName, firstTime = false) {
+        if (firstTime) {
+            this.clearScope();
+        }
         const fun = this.getFunction(functionName);
         if (fun) {
             const scope = fun.parameters ? this.createFunctionScope(fun)(2, 3) : {};
@@ -35,10 +38,10 @@ export class Interpreter {
         block.forEach(op => {
             switch (op.operation) {
                 case 'Declaration':
-                    this.handleDeclaration(op, this.lastScope);
+                    this.handleDeclaration(op, this.lastScope());
                     break;
                 case 'Attribution':
-                    this.handleAttribution(op, this.lastScope);
+                    this.handleAttribution(op, this.lastScope());
                     break;
                 case 'if':
                     this.handleIf(op);
@@ -82,8 +85,12 @@ export class Interpreter {
         return result;
     }
 
+    clearScope() {
+        this.scope = [{}]; 
+    }
+
     setGlobal() {
-        this.scope = [{}];
+        this.clearScope();
         this.scope[0]['Node'] = this.createFunctionScope(this.code.node);
         this.addScope(this.code);
     }
@@ -134,6 +141,10 @@ export class Interpreter {
         const type = node[0];
         const parameters = node[1] && node[1].parameters;
         if (type !== 'Node') {
+            const memValue = node instanceof Array ? this.getVarFromArray(node, this.lastScope()) : this.lastScope()[node];
+            if (memValue) {
+                return memValue;
+            }
             console.error(`${parameters} not a Node`);
             return;
         }
@@ -184,14 +195,14 @@ export class Interpreter {
     }
 
     handleAttribution(com, scope) {
-        let memValue = com.variable instanceof Array ? this.getVarFromArray(com, scope) : scope[com.variable];
+        let memValue = com.variable instanceof Array ? this.getVarFromArray(com.variable, scope) : scope[com.variable];
         if (memValue) {
             if (this.handleParse(com, scope)) {
                 return;
             }
         }
         for (let i = this.scope.length - 1; i >= 0; i--) {
-            memValue = com.variable instanceof Array ? this.getVarFromArray(com, this.scope[i]) : this.scope[i][com.variable];
+            memValue = com.variable instanceof Array ? this.getVarFromArray(com.variable, this.scope[i]) : this.scope[i][com.variable];
             if (memValue) {
                 if (this.handleParse(com, this.scope[i])) {
                     return;
@@ -229,7 +240,7 @@ export class Interpreter {
     }
 
     handleParse(com, scope, dec = false) {
-        const memValue = com.variable instanceof Array ? this.getVarFromArray(com, scope) : scope[com.variable];
+        const memValue = com.variable instanceof Array ? this.getVarFromArray(com.variable, scope) : scope[com.variable];
         const parsedValue = dec ? 
             this.typeParse[com.type](com.value) : 
             this.typeParse[memValue.type](com.value);
@@ -247,20 +258,20 @@ export class Interpreter {
         return false;
     }
 
-    getVarFromArray(com, scope) {
-        let ret = scope[com.variable[0]];
+    getVarFromArray(variable, scope) {
+        let ret = scope[variable[0]];
         if (!ret) {
             for (let i = this.scope.length - 1; i >= 0; i--) {
-                ret = this.scope[i][com.variable[0]];
+                ret = this.scope[i][variable[0]];
                 if (ret) {
                     break;
                 }
             }
             if (!ret) {
-                console.error(`Variable ${com.variable} not declared`);
+                console.error(`Variable ${variable} not declared`);
             }
         }
-        const rest = com.variable.slice(1);
+        const rest = variable.slice(1);
         rest.forEach(element => {
             if (element.type === 'Object') {
                 ret = ret.value.type === 'Node' ? ret.value.value[element.name] : ret.value[element.name];
