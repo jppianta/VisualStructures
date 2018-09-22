@@ -762,9 +762,9 @@ function peg$parse(input, options) {
             if (s5 !== peg$FAILED) {
               s6 = peg$parse_();
               if (s6 !== peg$FAILED) {
-                s7 = peg$parseIdRS();
+                s7 = peg$parseExpression();
                 if (s7 === peg$FAILED) {
-                  s7 = peg$parseExpression();
+                  s7 = peg$parseIdRS();
                 }
                 if (s7 !== peg$FAILED) {
                   peg$savedPos = s0;
@@ -820,11 +820,11 @@ function peg$parse(input, options) {
         if (s3 !== peg$FAILED) {
           s4 = peg$parse_();
           if (s4 !== peg$FAILED) {
-            s5 = peg$parseIdRS();
+            s5 = peg$parseNull();
             if (s5 === peg$FAILED) {
               s5 = peg$parseExpression();
               if (s5 === peg$FAILED) {
-                s5 = peg$parseNull();
+                s5 = peg$parseIdRS();
               }
             }
             if (s5 !== peg$FAILED) {

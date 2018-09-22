@@ -36,7 +36,7 @@ Commands = cHead:(LineCommand / BlockCommand) cTail:(_ (LineCommand / BlockComma
     }));
 }
 
-Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Expression) {
+Declaration = type:(Type) _1 vari:Id _ "=" _ value:(Expression / IdRS) {
 	return {
         operation: "Declaration",
         variable: vari,
@@ -45,7 +45,7 @@ Declaration = type:(Type) _1 vari:Id _ "=" _ value:(IdRS / Expression) {
     }
 }
 
-Attribution = vari:IdRS _ '=' _ value:(IdRS / Expression / Null) {
+Attribution = vari:IdRS _ '=' _ value:(Null / Expression / IdRS) {
 	return {
         operation: "Attribution",
         variable: vari,

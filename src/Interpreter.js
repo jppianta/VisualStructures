@@ -162,7 +162,26 @@ export class Interpreter {
         if (!isNaN(result)) {
             return result;
         }
+        if (value.operation) {
+            return this.parseNumberOperation(value.left, value.right, value.operation);
+        }
+        const memValue = value instanceof Array ? this.getVarFromArray(value, this.lastScope()) : this.lastScope()[value];
+        if (memValue) {
+            return memValue.value;
+        }
         console.error(`Value ${value} is not a number`);
+    }
+
+    parseNumberOperation(left, right, op) {
+        left = this.parseNumber(left);
+        right = this.parseNumber(right);
+    	const operators = {
+        	'+': (d1, d2) => d1+d2,
+            '-': (d1, d2) => d1-d2,
+            '*': (d1, d2) => d1*d2,
+            '/': (d1, d2) => d1/d2,
+        }
+        return operators[op](left, right);
     }
 
     parseBool(op) {
@@ -171,10 +190,23 @@ export class Interpreter {
     }
 
     parseBoolOperator(operator, left, right) {
+        let sides;
         switch (operator) {
             case '||': return this.parseBool(left) || this.parseBool(right);
             case '&&': return this.parseBool(left) && this.parseBool(right);
-            default: break;
+            case '==': 
+                sides = this.getBothSides(left, right);
+                if (sides) {
+                    return sides[0] === sides[1];
+                }
+                return this.parseBool(left) === this.parseBool(right);
+            case '!=': 
+                sides = this.getBothSides(left, right);
+                if (sides) {
+                    return sides[0] !== sides[1];
+                }
+                return this.parseBool(left) !== this.parseBool(right);
+                default: break;
         } 
     }
 
@@ -183,6 +215,16 @@ export class Interpreter {
             case 'true': return true;
             case 'false': return false;
             default: break;
+        }
+    }
+
+    getBothSides(left, right) {
+        try {
+            left = this.parseNumber(left);
+            right = this.parseNumber(right);
+            return [left, right]
+        } catch(err) {
+            return undefined;
         }
     }
 
@@ -244,7 +286,7 @@ export class Interpreter {
         const parsedValue = dec ? 
             this.typeParse[com.type](com.value) : 
             this.typeParse[memValue.type](com.value);
-        if (parsedValue) {
+        if (parsedValue !== undefined) {
             if (dec) {
                 scope[com.variable] = {
                     type: com.type,

@@ -36,7 +36,7 @@ export class Visualizer extends Component {
         network.style.backgroundColor = '#1D1F21';
     }
 
-    updateNetwork(step) {
+    async updateNetwork(step) {
         step = step[0];
         step.nodes = step.nodes.map(node => {
             Object.assign(node, this.nodeColors);
