@@ -27,6 +27,49 @@ body {
 .EditorPanel {
   flex: 1;
   flex-direction: column;
+  display: flex;
+}
+
+.Tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.TabButtons {
+  text-align: initial;
+}
+
+.TabButtons button {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: #1d1f21;
+  margin-right: 0.5%;
+  font-size: 14px;
+  font-family: 'Muli', sans-serif;
+}
+
+.TabButtons button:focus {
+  outline: none;
+}
+
+.notActive {
+  background-color: #e8ffff;
+  box-shadow: 1px 1px #8bd1cb;
+}
+
+.active {
+  background-color: #8bd1cb;
+  box-shadow: 1px 1px #e8ffff;
+}
+
+.TabContents {
+  flex: 1;
+  display: flex;
+}
+
+.TabContents div {
+  flex: 1;
 }
 
 .VisualizerPanel {
@@ -41,8 +84,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: monaco;
-  font-size: 12px;
+  font-family: 'Muli', sans-serif;
+  font-size: 14px;
 }
 
 .EditorBar div {
@@ -76,11 +119,40 @@ body {
   align-items: center;
 }
 
+.Select {
+  background-color: #e8ffff;
+  color: #1d1f21;
+  border-radius: 5px;
+  font-family: 'Muli', sans-serif;
+  margin-right: 1%;
+  font-size: 14px;
+  box-shadow: 1px 1px #8bd1cb;
+}
+
+.Select:focus {
+  outline: none;
+}
+
+.RunButton {
+  background-color: #e8ffff;
+  color: #1d1f21;
+  border-radius: 5px;
+  font-family: 'Muli', sans-serif;
+  font-size: 14px;
+  box-shadow: 1px 1px #8bd1cb;
+}
+
+.RunButton:focus {
+  outline: none;
+}
+
 /* Outsiders */
 
 .Ace {
   height: 90%;
-  border-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .Visualizer {
