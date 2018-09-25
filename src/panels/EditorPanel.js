@@ -3,6 +3,7 @@ import { events } from '../EventManager';
 import { parse } from '../grammar/grammar';
 import { AceEditor } from '../outsiders/ace/Ace';
 import { EditorBar } from '../bars/EditorBar';
+import { Tabs } from '../Tabs';
 
 export class EditorPanel extends Component {
     constructor(props) {
@@ -54,9 +55,16 @@ export class EditorPanel extends Component {
     render() {
         return (
             <div className="EditorPanel">
-                <AceEditor 
-                    panelCallback = {this.textChanged.bind(this)}   
-                />
+                <Tabs>
+                    <tab name='Code'>
+                        <AceEditor 
+                            panelCallback = {this.textChanged.bind(this)}  
+                        />
+                    </tab>
+                    <tab name='Runtime'>
+                        <div></div>
+                    </tab>
+                </Tabs>
                 <EditorBar 
                     errorText = {this.state.error}
                     errorLocation = {this.state.errorLocation}
