@@ -24,7 +24,9 @@ export class Visualizer extends Component {
         const container = document.getElementById('vis-container');
         const options = {
             physics: false,
-            autoResize: true,
+            autoResize: false,
+            width: '',
+            height: '',
             layout: {
                 hierarchical: {
                     enabled: true

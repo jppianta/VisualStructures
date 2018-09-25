@@ -6,7 +6,10 @@ export class VisualizerPanel extends Component {
     render() {
         return (
             <div className="VisualizerPanel">
-                <Visualizer />
+                <div className="container">
+                    <div className="filler"></div>
+                    <Visualizer />
+                </div>
                 <VisualizerBar items={this.props.items} executeFunction={this.props.executeFunction}/>
             </div>
         );
