@@ -66,14 +66,32 @@ body {
 .TabContents {
   flex: 1;
   display: flex;
+  border-bottom-left-radius: 5px;
+  border-top: 2px solid #e5ffff;
+  border-left: 2px solid #e5ffff;
+  border-right: 1px solid #e5ffff;
+  border-bottom: 2px solid #e5ffff;
 }
 
 .TabContents div {
   flex: 1;
+  display: flex;
 }
 
 .VisualizerPanel {
   flex: 1;
+  flex-direction: column;
+  display: flex;
+}
+
+.filler {
+  height: 23px;
+  display: inline-table;
+}
+
+.VisualizerPanel .container {
+  flex: 1;
+  display: flex;
   flex-direction: column;
 }
 
@@ -149,12 +167,20 @@ body {
 /* Outsiders */
 
 .Ace {
-  height: 90%;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+  flex: 1;
 }
 
 .Visualizer {
-  height: 90%;
+  flex: 1;
+  display: flex;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top: 2px solid #e5ffff;
+  border-left: 1px solid #e5ffff;
+  border-right: 2px solid #e5ffff;
+  border-bottom: 2px solid #e5ffff;
+}
+
+.Visualizer div {
+  flex: 1;
 }
