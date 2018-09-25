@@ -17,7 +17,7 @@ export class AceEditor extends Component {
         this.editor = edit('ace-container');
         config.set('basePath', '/VisualStructures/lib/ace/');
         this.editor.setTheme('ace/theme/tomorrow_night');
-        this.editor.getSession().setUseSoftTabs(false);
+        this.editor.getSession().setUseWorker(false);
         this.editor.getSession().setTabSize(4);
         this.editor.setOptions({
             fontFamily: 'monaco',
