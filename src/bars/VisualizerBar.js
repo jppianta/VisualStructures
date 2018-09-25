@@ -35,10 +35,10 @@ export class VisualizerBar extends Component {
     render() {
         return (
             <div className="VisualizerBar">
-                <select value={this.state.value} onChange={this.handleChange}>
+                <select className="Select" value={this.state.value} onChange={this.handleChange}>
                     {this.props.items}
                 </select>
-                <button onClick={this.runFunction.bind(this)}>Run</button>
+                <button className="RunButton" onClick={this.runFunction.bind(this)}>Run</button>
             </div>
         );
     }
