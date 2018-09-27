@@ -17,13 +17,14 @@ export class Interpreter {
     }
 
     setCode(code) {
+        this.clearScope();
         this.code = code;
         this.setGlobal();
     }
 
     executeFunction(functionName, firstTime = false) {
         if (firstTime) {
-            this.clearScope();
+            
         }
         const fun = this.getFunction(functionName);
         if (fun) {
@@ -137,11 +138,20 @@ export class Interpreter {
         return result;
     }
 
+    isNull(variable) {
+        const arrayVar = variable instanceof Array ? variable : [variable];
+        const first = arrayVar[0];
+        return first === 'null' && arrayVar.length === 1;
+    }
+
     parseNode(node) {
+        if (this.isNull(node)) {
+            return null;
+        }
         const type = node[0];
         const parameters = node[1] && node[1].parameters;
         if (type !== 'Node') {
-            const memValue = node instanceof Array ? this.getVarFromArray(node, this.lastScope()) : this.lastScope()[node];
+            const memValue = this.getValueFromMemory(node, this.lastScope());
             if (memValue) {
                 return memValue;
             }
@@ -158,6 +168,7 @@ export class Interpreter {
     }
 
     parseNumber(value) {
+        if (value === undefined) return value;
         const result = Number(value);
         if (!isNaN(result)) {
             return result;
@@ -165,7 +176,7 @@ export class Interpreter {
         if (value.operation) {
             return this.parseNumberOperation(value.left, value.right, value.operation);
         }
-        const memValue = value instanceof Array ? this.getVarFromArray(value, this.lastScope()) : this.lastScope()[value];
+        const memValue = this.getValueFromMemory(value, this.lastScope());
         if (memValue) {
             return memValue.value;
         }
@@ -220,6 +231,21 @@ export class Interpreter {
 
     getBothSides(left, right) {
         try {
+            const memLeft = this.getValueFromMemory(left, this.lastScope());
+            const memRight = this.getValueFromMemory(right, this.lastScope());
+            if (memLeft && memRight) {
+                return [memLeft.value, memRight.value];
+            }
+            if (memLeft) {
+                const type = memLeft.type;
+                const rightValue = this.typeParse[type](right);
+                return [memLeft.value, rightValue];
+            }
+            if (memRight) {
+                const type = memRight.type;
+                const leftValue = this.typeParse[type](left);
+                return [leftValue, memRight.value];
+            }
             left = this.parseNumber(left);
             right = this.parseNumber(right);
             return [left, right]
@@ -237,18 +263,10 @@ export class Interpreter {
     }
 
     handleAttribution(com, scope) {
-        let memValue = com.variable instanceof Array ? this.getVarFromArray(com.variable, scope) : scope[com.variable];
+        const memValue = this.getValueFromMemory(com.variable, scope);
         if (memValue) {
             if (this.handleParse(com, scope)) {
                 return;
-            }
-        }
-        for (let i = this.scope.length - 1; i >= 0; i--) {
-            memValue = com.variable instanceof Array ? this.getVarFromArray(com.variable, this.scope[i]) : this.scope[i][com.variable];
-            if (memValue) {
-                if (this.handleParse(com, this.scope[i])) {
-                    return;
-                }
             }
         }
         console.error(`Variable ${com.variable} not declared`);
@@ -282,7 +300,7 @@ export class Interpreter {
     }
 
     handleParse(com, scope, dec = false) {
-        const memValue = com.variable instanceof Array ? this.getVarFromArray(com.variable, scope) : scope[com.variable];
+        const memValue = this.getValueFromMemory(com.variable, scope);
         const parsedValue = dec ? 
             this.typeParse[com.type](com.value) : 
             this.typeParse[memValue.type](com.value);
@@ -300,6 +318,11 @@ export class Interpreter {
         return false;
     }
 
+    getValueFromMemory(variable, scope) {
+        const arrayVar = variable instanceof Array ? variable : [variable];
+        return this.getVarFromArray(arrayVar, scope);
+    }
+
     getVarFromArray(variable, scope) {
         let ret = scope[variable[0]];
         if (!ret) {
@@ -310,7 +333,7 @@ export class Interpreter {
                 }
             }
             if (!ret) {
-                console.error(`Variable ${variable} not declared`);
+                return undefined;
             }
         }
         const rest = variable.slice(1);
