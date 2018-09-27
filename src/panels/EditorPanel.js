@@ -41,7 +41,7 @@ export class EditorPanel extends Component {
 
     parseErrorMessage(error) {
         this.error = error.name + ': ' + error.message;
-        this.errorLocation = `Line ${error.location.start.line}, Column ${error.location.start.column}`;
+        this.errorLocation = error.location && `Line ${error.location.start.line}, Column ${error.location.start.column}`;
         this.setErrorMessage();
     }
 
