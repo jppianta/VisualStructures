@@ -36,6 +36,9 @@ export class Visualizer extends Component {
         this.visualizer = new Network(container, {}, options);
         const network = container.firstElementChild;
         network.style.backgroundColor = '#1D1F21';
+        const canvas = network.firstElementChild;
+        canvas.height = '';
+        canvas.width = '';
     }
 
     async updateNetwork(step) {
