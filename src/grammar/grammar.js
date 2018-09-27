@@ -1966,16 +1966,22 @@ function peg$parse(input, options) {
   }
 
   function peg$parseEqualityOperation2() {
-    var s0, s1, s2;
+    var s0, s1, s2, s3;
 
     s0 = peg$currPos;
     s1 = peg$parseEqualityOperators();
     if (s1 !== peg$FAILED) {
-      s2 = peg$parseEqualityOperation();
+      s2 = peg$parse_();
       if (s2 !== peg$FAILED) {
-        peg$savedPos = s0;
-        s1 = peg$c83(s1, s2);
-        s0 = s1;
+        s3 = peg$parseEqualityOperation();
+        if (s3 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c83(s1, s3);
+          s0 = s1;
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
       } else {
         peg$currPos = s0;
         s0 = peg$FAILED;

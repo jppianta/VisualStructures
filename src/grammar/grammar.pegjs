@@ -179,7 +179,7 @@ EqualityOperation = c1:(BoolFactor / Expression / IdRS) _ tail:EqualityOperation
     return tail ? Object.assign({left: c1}, tail) : c1
 }
 
-EqualityOperation2 = op:EqualityOperators c2:EqualityOperation {
+EqualityOperation2 = op:EqualityOperators _ c2:EqualityOperation {
     return {
         operation: op,
         right: c2
