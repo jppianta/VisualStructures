@@ -1,9 +1,10 @@
-html {
+html, body {
   height: 100%;
+  width: 100%;
 }
 
 body {
-  height: 100%;
+  display: flex;
 }
 
 .App {
@@ -18,7 +19,7 @@ body {
 
 .MainPanel {
   display: flex;
-  height: 100%;
+  flex: 1;
   margin-top: 15px;
   margin-left: 15px;
   margin-right: 15px;
@@ -38,9 +39,11 @@ body {
 
 .TabButtons {
   text-align: initial;
+  height: 5%;
 }
 
 .TabButtons button {
+  height: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   color: #1d1f21;
@@ -124,10 +127,14 @@ body {
   justify-content: flex-end;
 }
 
-.header img {
+.header {
   height: 8%;
   max-height: 80px;
   margin-top: 15px;
+}
+
+.header img {
+  height: 100%;
 }
 
 .VisualizerBar {

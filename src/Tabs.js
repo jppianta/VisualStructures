@@ -26,7 +26,7 @@ export class Tabs extends Component {
     render() {
         return (
             <div className="Tabs">
-                <div className='TabButtons'>
+                <div className='TabButtons' id="tabButtons">
                     {
                         this.tabs.map(tab => {
                             return <button key={tab.name} className={this.state.visibleTab === tab.name ? 'active' : 'notActive'} onClick={this.onClick.bind(this, { tab: tab.name })}>{tab.name}</button>
