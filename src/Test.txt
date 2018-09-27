@@ -7,7 +7,11 @@ class LL {
     Node root  = Node(2);
     
     fun add():void {
-        Node aux = Node(3);
-        root.next = aux;
+        number n = 20;
+        Node aux = root;
+        while (aux.next != null) {
+            aux = aux.next;
+        }
+        aux.next = Node(n);
     }
 }
