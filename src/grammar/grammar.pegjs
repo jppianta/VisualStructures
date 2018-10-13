@@ -1,18 +1,62 @@
-{
-	function parseOperation(op, c1, c2) {
-    	c1 = Number(c1);
-        c2 = Number(c2);
-    	const operators = {
-        	'+': (d1, d2) => d1+d2,
-            '-': (d1, d2) => d1-d2,
-            '*': (d1, d2) => d1*d2,
-            '/': (d1, d2) => d1/d2,
-        }
-        return String(operators[op](c1,c2));
+M = Class
+
+Relational = '!=' / '==' / Compares
+
+Compares = op:CompareOperators eq:Equals? { return eq ? op + eq : op }
+CompareOperators = '>' / '<'
+Equals = '='
+
+BoolOperator = "&&" / "||"
+
+PlusMinus = '+' / '-'
+
+MultDiv = '*' / '/'
+
+Expression = left:B _ op:Relational _ right:B {
+	return {
+        type: 'bool',
+    	operation: op,
+        left,
+        right
     }
 }
+/ B
 
-M = Class
+B = left:Additive _ op:BoolOperator _ right:B {
+	return {
+        type: 'bool',
+    	operation: op,
+        left,
+        right
+    }
+}
+/ Additive
+
+Additive = left:Mult _ op:PlusMinus _ right:Additive {
+	return {
+        type: 'number',
+    	operation: op,
+        left,
+        right
+    }
+}
+/ Mult
+
+Mult = left:Primary _ op:MultDiv _ right:Mult {
+	return {
+        type: 'number',
+    	operation: op,
+        left,
+        right
+    }
+}
+/ Primary
+
+Primary = Number
+/ Bool
+/ Null
+/ IdRS
+/ '(' Expression ')'
 
 LineCommands = l:(LineCommand _)* {
 	return l.map(c => {
@@ -36,7 +80,7 @@ Commands = cHead:(LineCommand / BlockCommand) cTail:(_ (LineCommand / BlockComma
     }));
 }
 
-Declaration = type:(Type) _1 vari:Id _ "=" _ value:(Expression / IdRS) {
+Declaration = type:(Type) _1 vari:Id _ "=" _ value:Expression {
 	return {
         operation: "Declaration",
         variable: vari,
@@ -45,7 +89,7 @@ Declaration = type:(Type) _1 vari:Id _ "=" _ value:(Expression / IdRS) {
     }
 }
 
-Attribution = vari:IdRS _ '=' _ value:(Null / Expression / IdRS) {
+Attribution = vari:IdRS _ '=' _ value:Expression {
 	return {
         operation: "Attribution",
         variable: vari,
@@ -77,7 +121,7 @@ ObjectAccess = r:('.' Id) {
     }
 }
 
-FunctionAccess = '(' _ v: ((IdRS / Expression / Null) (',' _ (IdRS / Expression / Null))*)? _ ')' {
+FunctionAccess = '(' _ v: (Expression (',' _ Expression)*)? _ ')' {
 	return {
     	type: 'Function',
         parameters: v ? [v[0]].concat(v[1].map(d => {
@@ -107,113 +151,46 @@ IdAtribbute = head:(Id) tail:('.' Id)* {
 
 Type = 'number' / "void" / "string" / "bool" / "char" / "Node"
 
-Null = 'null'
-
-Expression
-  = head:Term tail:(_ NumberOperator1 _ Term)* {
-      return tail.reduce(function(result, element) {
-      	const left = result;
-        const right = element[3];
-        const op = element[1];
-        return Number(left) && Number(right) ? parseOperation(element[1], result, element[3]) : {
-        	operation: op,
-            left,
-            right
-        };
-      }, head);
+Null = 'null' {
+	return {
+    	type: 'Node',
+        value: null
     }
-
-Term
-  = head:Factor tail:(_ NumberOperator2 _ Factor)* {
-      return tail.reduce(function(result, element) {
-      	const left = result;
-        const right = element[3];
-        const op = element[1];
-        return Number(left) && Number(right) ? parseOperation(element[1], result, element[3]) : {
-        	operation: op,
-            left,
-            right
-        };
-      }, head);
-    }
-
-Factor
-  = "(" _ expr:Expression _ ")" { return expr; }
-  / Number
-  / IdRS
+}
 
 Number = ch:OneNumber+ {
-	return ch.reduce((res, c) => {
-    	return res+=c;
-    })
-}
-
-NumberOperator1 = '+' / '-'
-NumberOperator2 = '*' / '/'
-
-Compares = op:CompareOperators eq:Equals? { return eq ? op + eq : op }
-CompareOperators = '>' / '<'
-Equals = '='
-
-CompareOperation = exp1:Expression _ op:(Compares) _ exp2:Expression {
-    return {
-        operation: op,
-        left: exp1,
-        right: exp2
+	return {
+    	type: 'number',
+        value: ch.reduce((res, c) => {
+    			return res+=c;
+    	})
     }
 }
-/ '(' _ b: CompareOperation _ ')' { return b }
 
 _ "whitespace"
   = [ \t\n\r]*
               
 _1 = [ \t\n\r]+
 
-Bool = b:("true" / "false") { return b; }
-
-BoolOperator = "&&" / "||"
-
-EqualityOperators = "==" / "!="
-
-EqualityOperation = c1:(BoolFactor / Expression / IdRS) _ tail:EqualityOperation2? {
-    return tail ? Object.assign({left: c1}, tail) : c1
+Bool = b:("true" / "false") {
+	return {
+    	type: 'bool',
+        value: b
+    }; 
 }
 
-EqualityOperation2 = op:EqualityOperators _ c2:EqualityOperation {
-    return {
-        operation: op,
-        right: c2
-    }
-}
-
-Condition = '(' _ b:(EqualityOperation / CompareOperation / BoolOperation) _ ')' {
+Condition = '(' _ b: Expression _ ')' {
 	return b;
 }
-
-BoolOperation = c1: BoolFactor _ tail:BoolOperation2? {
-    return tail ? Object.assign({left: c1}, tail) : c1
-}
-
-BoolOperation2 = op:(BoolOperator) _ c2:BoolOperation {
-    return {
-        operation: op,
-        right: c2
-    }
-}
-
-BoolFactor = Bool / IdRS / '(' _ b:BoolOperation _ ')' {
-	return b;
-}
-
 
 Var = t:Type v:("[]")? _1 i:Id {
 	return [i,t+(v ? v : "")]
 }
 
-Node = "Node" _ '{' _ p:Parameters _ '}' { 
+Node = "Node" _ '{' _ p:Parameters? _ '}' { 
 	return {
     	operation: "node",
-        parameters: p
+        parameters: p || {}
     }
 }
 
@@ -244,7 +221,7 @@ Function = "fun" _1 i:Id _ '(' _ p:Parameters? _ ')' _ ':' _ t:Type _ f:Function
 	return {
     	operation: "function",
         name: i,
-        parameters: p,
+        parameters: p || {},
         type: t,
         block: f
     }
