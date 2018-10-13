@@ -12,6 +12,8 @@ export class Visualizer extends Component {
 
         this.visualizer = undefined;
 
+        this.nodes = [];
+
         this.nodeColors = {
             color: {
                 background: '#e5ffff',
@@ -29,7 +31,7 @@ export class Visualizer extends Component {
             height: '',
             layout: {
                 hierarchical: {
-                    enabled: true
+                    direction: 'UD'
                 }
             }
         }
@@ -43,7 +45,9 @@ export class Visualizer extends Component {
 
     async updateNetwork(step) {
         step = step[0];
+        this.nodes = step.nodes;
         step.nodes = step.nodes.map(node => {
+            delete node.prop;
             Object.assign(node, this.nodeColors);
             return node;
         })
