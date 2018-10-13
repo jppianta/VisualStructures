@@ -1,8 +1,4 @@
-<div align='center'>
-    <img src='./src/images/sizedLogo.png'>
-</div>
-
-# Visual Structures
+# Visual Structures <img src='./src/images/logo.svg' height='50px'>
 
 ## General Ideia
 
