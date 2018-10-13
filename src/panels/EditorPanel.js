@@ -4,6 +4,7 @@ import { parse } from '../grammar/grammar';
 import { AceEditor } from '../outsiders/ace/Ace';
 import { EditorBar } from '../bars/EditorBar';
 import { Tabs } from '../Tabs';
+import { DocumentationPanel } from './DocumentationPanel';
 
 export class EditorPanel extends Component {
     constructor(props) {
@@ -63,6 +64,9 @@ export class EditorPanel extends Component {
                     </tab>
                     <tab name='Runtime'>
                         <div></div>
+                    </tab>
+                    <tab name='Documentation'>
+                        <DocumentationPanel />
                     </tab>
                 </Tabs>
                 <EditorBar 

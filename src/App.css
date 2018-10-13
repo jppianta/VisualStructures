@@ -98,6 +98,35 @@ body {
   flex-direction: column;
 }
 
+.DocumentationPanel {
+  text-align: center;
+  font-family: 'Muli', sans-serif;
+}
+
+.DocumentationPanel h1 {
+  color: #8bd1cb;
+}
+
+.DocumentationPanel h2 {
+  color: #e8ffff;
+}
+
+.DocumentationPanel p, code {
+  color: white;
+}
+
+.DocumentationPanel .Code {
+  display: inline-block;
+}
+
+.DocumentationPanel code {
+  text-align: initial;
+}
+
+.DocumentationPanel pre {
+  text-align: initial;
+}
+
 /* Bars */
 
 .EditorBar {
