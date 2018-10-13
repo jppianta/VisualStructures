@@ -4,12 +4,13 @@ export class Interpreter {
     scope = [{}];
     typeParse = {
         'number': this.parseNumber.bind(this),
-        'boolean': this.parseBool.bind(this),
+        'bool': this.parseBool.bind(this),
         'Node': this.parseNode.bind(this)
     }
 
     constructor() {
         this.events = events.getInstance();
+        this.idCount = 0;
     }
 
     hasCode() {
@@ -24,7 +25,7 @@ export class Interpreter {
 
     executeFunction(functionName, firstTime = false) {
         if (firstTime) {
-            
+
         }
         const fun = this.getFunction(functionName);
         if (fun) {
@@ -36,7 +37,7 @@ export class Interpreter {
     }
 
     executeBlock(block) {
-        block.forEach(op => {
+        (block || []).forEach(op => {
             switch (op.operation) {
                 case 'Declaration':
                     this.handleDeclaration(op, this.lastScope());
@@ -87,7 +88,7 @@ export class Interpreter {
     }
 
     clearScope() {
-        this.scope = [{}]; 
+        this.scope = [{}];
     }
 
     setGlobal() {
@@ -99,8 +100,8 @@ export class Interpreter {
     createFunctionScope(fun) {
         const parameters = this.parseParameters(fun.parameters);
         const keys = Object.keys(parameters);
-        return (...values) => {
-            for (let i=0; i<keys.length; i++) {
+        return (values) => {
+            for (let i = 0; i < keys.length; i++) {
                 parameters[keys[i]].value = values[i] ? this.typeParse[parameters[keys[i]].type](values[i]) : null;
             }
             return JSON.parse(JSON.stringify(parameters));
@@ -139,14 +140,12 @@ export class Interpreter {
     }
 
     isNull(variable) {
-        const arrayVar = variable instanceof Array ? variable : [variable];
-        const first = arrayVar[0];
-        return first === 'null' && arrayVar.length === 1;
+        return variable.type === 'Node' && variable.value === null;
     }
 
     parseNode(node) {
         if (this.isNull(node)) {
-            return null;
+            return node;
         }
         const type = node[0];
         const parameters = node[1] && node[1].parameters;
@@ -164,61 +163,89 @@ export class Interpreter {
                 return;
             }
         }
-        return this.scope[0]['Node'](parameters);
+        const value = this.scope[0]['Node'](parameters);
+        return {
+            type: 'Node',
+            value
+        }
     }
 
-    parseNumber(value) {
-        if (value === undefined) return value;
+    parseNumber(variable) {
+        if (variable === undefined) return variable;
+        const memValue = this.getValueFromMemory(variable, this.lastScope());
+        if (memValue) {
+            return memValue;
+        }
+        const value = variable.value;
         const result = Number(value);
         if (!isNaN(result)) {
-            return result;
+            variable.value = result;
+            return variable;
         }
-        if (value.operation) {
-            return this.parseNumberOperation(value.left, value.right, value.operation);
-        }
-        const memValue = this.getValueFromMemory(value, this.lastScope());
-        if (memValue) {
-            return memValue.value;
+        if (variable.operation) {
+            const operationResult = this.parseNumberOperation(variable.left, variable.right, variable.operation);
+            delete variable.left;
+            delete variable.right;
+            delete variable.operation;
+            variable.value = operationResult;
+            variable.type = 'number';
+            return variable;
         }
         console.error(`Value ${value} is not a number`);
     }
 
     parseNumberOperation(left, right, op) {
-        left = this.parseNumber(left);
-        right = this.parseNumber(right);
-    	const operators = {
-        	'+': (d1, d2) => d1+d2,
-            '-': (d1, d2) => d1-d2,
-            '*': (d1, d2) => d1*d2,
-            '/': (d1, d2) => d1/d2,
+        left = this.parseNumber(left).value;
+        right = this.parseNumber(right).value;
+        const operators = {
+            '+': (d1, d2) => d1 + d2,
+            '-': (d1, d2) => d1 - d2,
+            '*': (d1, d2) => d1 * d2,
+            '/': (d1, d2) => d1 / d2,
         }
         return operators[op](left, right);
     }
 
     parseBool(op) {
-        const value = this.toBoolean(op);
-        return value ? value : this.parseBoolOperator(op.operation, op.left, op.right);
+        const memValue = this.getValueFromMemory(op, this.lastScope());
+        if (memValue) {
+            return memValue;
+        }
+        
+        let value = this.toBoolean(op.value);
+        if (value !== undefined) {
+            op.value = value;
+            return op;
+        }
+        if (op.operation) {
+            value = this.parseBoolOperator(op.operation, op.left, op.right);
+            op.value = value;
+            delete op.operation;
+            delete op.left;
+            delete op.right;
+            return op;
+        }
     }
 
     parseBoolOperator(operator, left, right) {
         let sides;
         switch (operator) {
-            case '||': return this.parseBool(left) || this.parseBool(right);
-            case '&&': return this.parseBool(left) && this.parseBool(right);
-            case '==': 
+            case '||': return this.parseBool(left).value || this.parseBool(right).value;
+            case '&&': return this.parseBool(left).value && this.parseBool(right).value;
+            case '==':
                 sides = this.getBothSides(left, right);
                 if (sides) {
                     return sides[0] === sides[1];
                 }
-                return this.parseBool(left) === this.parseBool(right);
-            case '!=': 
+                break;
+            case '!=':
                 sides = this.getBothSides(left, right);
                 if (sides) {
                     return sides[0] !== sides[1];
                 }
-                return this.parseBool(left) !== this.parseBool(right);
-                default: break;
-        } 
+                break;
+            default: break;
+        }
     }
 
     toBoolean(value) {
@@ -239,17 +266,17 @@ export class Interpreter {
             if (memLeft) {
                 const type = memLeft.type;
                 const rightValue = this.typeParse[type](right);
-                return [memLeft.value, rightValue];
+                return [memLeft.value, rightValue.value];
             }
             if (memRight) {
                 const type = memRight.type;
                 const leftValue = this.typeParse[type](left);
-                return [leftValue, memRight.value];
+                return [leftValue.value, memRight.value];
             }
             left = this.parseNumber(left);
             right = this.parseNumber(right);
             return [left, right]
-        } catch(err) {
+        } catch (err) {
             return undefined;
         }
     }
@@ -258,23 +285,29 @@ export class Interpreter {
         if (scope[com.variable]) {
             console.error(`Variable ${com.variable} already declared`);
         } else {
-            this.handleParse(com, scope, true);
+            const parsedValue = this.typeParse[com.type](com.value);
+            if (parsedValue !== undefined) {
+                scope[com.variable] = parsedValue;
+                return true;
+            }
+            return false;
         }
     }
 
     handleAttribution(com, scope) {
-        const memValue = this.getValueFromMemory(com.variable, scope);
-        if (memValue) {
-            if (this.handleParse(com, scope)) {
-                return;
-            }
-        }
-        console.error(`Variable ${com.variable} not declared`);
+        this.sustituteValueInMemory(com.variable, scope, com.value);
+    }
+
+    getLastAccess(com) {
+        const arr = JSON.parse(JSON.stringify(com.variable instanceof Array ? com.variable : [com.variable]));
+        const arrayVar = arr.slice(1);
+        return arrayVar.pop();
     }
 
     handleIf(ifBlock) {
-        const parsedCondition = this.parseBool(ifBlock.condition);
-        if (parsedCondition) {
+        const condition = JSON.parse(JSON.stringify(ifBlock.condition));
+        const parsedCondition = this.parseBool(condition);
+        if (parsedCondition.value) {
             this.addScope(ifBlock.block);
             this.executeBlock(ifBlock.block);
             this.scope.pop();
@@ -290,8 +323,9 @@ export class Interpreter {
     handleWhile(whileBlock) {
         this.addScope(whileBlock.block);
         while (true) {
-            const parsedCondition = this.parseBool(whileBlock.condition);
-            if (!parsedCondition) {
+            const condition = JSON.parse(JSON.stringify(whileBlock.condition));
+            const parsedCondition = this.parseBool(condition);
+            if (!parsedCondition.value) {
                 this.scope.pop();
                 return;
             }
@@ -299,31 +333,55 @@ export class Interpreter {
         }
     }
 
-    handleParse(com, scope, dec = false) {
-        const memValue = this.getValueFromMemory(com.variable, scope);
-        const parsedValue = dec ? 
-            this.typeParse[com.type](com.value) : 
-            this.typeParse[memValue.type](com.value);
-        if (parsedValue !== undefined) {
-            if (dec) {
-                scope[com.variable] = {
-                    type: com.type,
-                    value: parsedValue
-                };
-                return true;
-            }
-            memValue.value = parsedValue;
-            return true;
-        }
-        return false;
-    }
-
-    getValueFromMemory(variable, scope) {
+    sustituteValueInMemory(variable, scope, newValue) {
         const arrayVar = variable instanceof Array ? variable : [variable];
-        return this.getVarFromArray(arrayVar, scope);
+        let ret = scope[arrayVar[0]];
+        if (!ret) {
+            for (let i = this.scope.length - 1; i >= 0; i--) {
+                ret = this.scope[i][arrayVar[0]];
+                if (ret) {
+                    if (arrayVar.length === 1) {
+                        this.scope[i][arrayVar[0]] = this.typeParse[this.scope[i][arrayVar[0]].type](newValue);
+                        return;
+                    }
+                }
+            }
+            if (!ret) {
+                return console.error(`Variable ${arrayVar[0]} not found`);
+            }
+        }
+        const rest = arrayVar.slice(1);
+        const last = rest.pop();
+        rest.forEach(element => {
+            if (element.type === 'Object') {
+                ret = ret.value[element.name];
+                if (ret === undefined) {
+                    console.error(`Property ${element.name} not found`);
+                }
+            } else if (element.type === 'Array') {
+                ret = ret.value[this.parseNumber(element.index)];
+                if (!ret) {
+                    console.error(`Index ${element.index} not found`);
+                }
+            }
+        });
+        if (last.type === 'Object') {
+            if (ret.value[last.name] !== undefined) {
+                ret.value[last.name] = this.typeParse[ret.value[last.name].type](newValue);
+            } else {
+                console.error(`Property ${last.name} not found`);
+            }
+        } else if (last.type === 'Array') {
+            ret.value[this.parseNumber(last.index)] = newValue;
+        }
     }
 
-    getVarFromArray(variable, scope) {
+    getValueFromMemory(variable, scope, father) {
+        const arrayVar = variable instanceof Array ? variable : [variable];
+        return this.getVarFromArray(arrayVar, scope, father);
+    }
+
+    getVarFromArray(variable, scope, father = false) {
         let ret = scope[variable[0]];
         if (!ret) {
             for (let i = this.scope.length - 1; i >= 0; i--) {
@@ -337,10 +395,13 @@ export class Interpreter {
             }
         }
         const rest = variable.slice(1);
+        if (father) {
+            rest.pop();
+        }
         rest.forEach(element => {
             if (element.type === 'Object') {
-                ret = ret.value.type === 'Node' ? ret.value.value[element.name] : ret.value[element.name];
-                if (!ret) {
+                ret = ret.value[element.name];
+                if (ret === undefined) {
                     console.error(`Property ${element.name} not found`);
                 }
             } else if (element.type === 'Array') {
@@ -354,34 +415,39 @@ export class Interpreter {
     }
 
     createStepFromNode(node) {
-        let cont = 0;
-        let currentNodeCont = cont;
+        this.idCount = 0;
+        return this.createStepFromNodeRec(node, 0, 0);
+    }
+
+    createStepFromNodeRec(node, id, level) {
         const data = {
-            nodes: [{id: cont, label: String(cont), prop: node.value}],
+            nodes: [],
             edges: []
         };
-        cont++;
-        const nodes = [node];
-        while (nodes.length > 0) {
-            const currentNode = nodes.splice(0, 1)[0];
-            const keys = currentNode && Object.keys(currentNode.value);
-            keys.forEach(key => {
-                if (currentNode.value[key].type === 'Node array') {
-                    currentNode.value[key].value.forEach(n => {
-                        data.nodes.push({id: cont, label: String(cont), prop: n});
-                        data.edges.push({from: currentNodeCont, to: cont, arrows:'to'});
-                        nodes.push(n);
-                        cont++;
-                    });
-                } else if (currentNode.value[key].type === 'Node' && currentNode.value[key].value !== null) {
-                    data.nodes.push({id: cont, label: String(cont), prop: currentNode.value[key]});
-                    data.edges.push({from: currentNodeCont, to: cont, arrows:'to'});
-                    nodes.push(currentNode.value[key]);
-                    cont++;
+        if (!node.value) return data;
+        if (node.$been !== undefined) return {
+            id: node.$been
+        };
+        data.nodes.push({ id, label: String(id), prop: node.value, level });
+        node.$been = id;
+        const keys = Object.keys(node.value);
+        let next;
+        level++;
+        keys.forEach(key => {
+            if (node.value[key].type === 'Node' && node.value[key].value !== null) {
+                this.idCount++;
+                next = this.idCount;
+                const res = this.createStepFromNodeRec(node.value[key], next, level);
+                if ('id' in res) {
+                    data.edges.push({ from: id, to: res.id, arrows: 'to' });
+                } else {
+                    data.edges.push({ from: id, to: next, arrows: 'to' });
+                    data.edges = data.edges.concat(res.edges);
+                    data.nodes = data.nodes.concat(res.nodes);
                 }
-            });
-            currentNodeCont++;
-        }
+            }
+        });
+        delete node.$been;
         return data;
     }
 }
