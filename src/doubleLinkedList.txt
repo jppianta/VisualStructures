@@ -1,17 +1,21 @@
 class LL {
     Node {
         number x,
-        Node next
+        Node next,
+        Node before
     }
     
     Node root  = Node(2);
     
     fun add():void {
         number n = 20;
+        bool p = true && false;
         Node aux = root;
         while (aux.next != null) {
             aux = aux.next;
         }
-        aux.next = Node(n);
+        Node v = Node(n);
+        v.before = aux;
+        aux.next = v;
     }
 }

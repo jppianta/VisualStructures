@@ -1,0 +1,13 @@
+class BST {
+    Node {
+        number x,
+        Node left,
+        Node right
+    }
+    
+    Node root = Node(0);
+    
+    fun add():void {
+        number n = 20;
+    }
+}
