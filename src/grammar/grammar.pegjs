@@ -55,6 +55,7 @@ Mult = left:Primary _ op:MultDiv _ right:Mult {
 Primary = Number
 / Bool
 / Null
+/ FunctionCall
 / IdRS
 / '(' Expression ')'
 
@@ -70,7 +71,7 @@ Functions = f:(Function _)* {
     })
 }
 
-LineCommand = atr:(Declaration / Attribution) _ ";" {return atr}
+LineCommand = atr:(FunctionCall / Return / Declaration / Attribution) _ ";" {return atr}
 
 BlockCommand = If / While 
 
@@ -94,6 +95,13 @@ Attribution = vari:IdRS _ '=' _ value:Expression {
         operation: "Attribution",
         variable: vari,
         value: value	
+    }
+}
+
+Return = 'return' value:(_1 Expression)? {
+    return {
+        operation: 'Return',
+        value: value && value[1]
     }
 }
 
@@ -130,7 +138,15 @@ FunctionAccess = '(' _ v: (Expression (',' _ Expression)*)? _ ')' {
     }
 }
 
-RS = (ArrayAccess / ObjectAccess / FunctionAccess)
+FunctionCall = functionName: Id call:FunctionAccess {
+    return {
+        operation: call.type,
+        parameters: call.parameters,
+        name: functionName
+    }
+}
+
+RS = (ArrayAccess / ObjectAccess)
 
 OneChar = [a-zA-Z]
 OneNumber = [0-9]
