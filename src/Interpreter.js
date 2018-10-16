@@ -5,7 +5,8 @@ export class Interpreter {
     typeParse = {
         'number': this.parseNumber.bind(this),
         'bool': this.parseBool.bind(this),
-        'Node': this.parseNode.bind(this)
+        'Node': this.parseNode.bind(this),
+        'void': () => undefined
     }
 
     constructor() {
@@ -23,42 +24,50 @@ export class Interpreter {
         this.setGlobal();
     }
 
-    executeFunction(functionName, firstTime = false) {
-        if (firstTime) {
-
-        }
+    executeFunction(functionName, functionParameters = []) {
         const fun = this.getFunction(functionName);
         if (fun) {
-            const scope = fun.parameters ? this.createFunctionScope(fun)(2, 3) : {};
-            this.addScope(scope);
-            this.executeBlock(fun.block);
+            const scope = fun.parameters ? this.createFunctionScope(fun)(functionParameters) : {};
+            this.scope.push(scope);
+            const returnValue = this.executeBlock(fun.block, fun.type);
             this.scope.pop();
+            return returnValue;
         }
     }
 
-    executeBlock(block) {
-        (block || []).forEach(op => {
-            switch (op.operation) {
+    executeBlock(block, functionType) {
+        let returnValue;
+        (block || []).some(op => {
+            const ope = JSON.parse(JSON.stringify(op));
+            switch (ope.operation) {
                 case 'Declaration':
-                    this.handleDeclaration(op, this.lastScope());
+                    this.handleDeclaration(ope, this.lastScope());
                     break;
                 case 'Attribution':
-                    this.handleAttribution(op, this.lastScope());
+                    this.handleAttribution(ope, this.lastScope());
+                    break;
+                case 'Function':
+                    this.executeFunction(ope.name, ope.parameters);
                     break;
                 case 'if':
-                    this.handleIf(op);
+                    this.handleIf(ope);
                     break;
                 case 'while':
-                    this.handleWhile(op);
+                    this.handleWhile(ope);
                     break;
-                default: break;
+                case 'Return':
+                    returnValue = this.handleReturn(ope, functionType);
+                    return true;
+                default: return false;
             }
             const node = this.findGlobalNode();
             if (node) {
                 const step = this.createStepFromNode(node);
                 this.events.dispatch('newStep', step);
             }
+            return false;
         });
+        return returnValue;
     }
 
     findGlobalNode() {
@@ -98,13 +107,13 @@ export class Interpreter {
     }
 
     createFunctionScope(fun) {
-        const parameters = this.parseParameters(fun.parameters);
-        const keys = Object.keys(parameters);
         return (values) => {
+            const parameters = this.parseParameters(fun.parameters);
+            const keys = Object.keys(parameters);
             for (let i = 0; i < keys.length; i++) {
-                parameters[keys[i]].value = values[i] ? this.typeParse[parameters[keys[i]].type](values[i]) : null;
+                parameters[keys[i]] = values[i] ? this.typeParse[parameters[keys[i]].type](values[i]) : { type: 'Node', value: null };
             }
-            return JSON.parse(JSON.stringify(parameters));
+            return parameters;
         };
     }
 
@@ -147,9 +156,12 @@ export class Interpreter {
         if (this.isNull(node)) {
             return node;
         }
-        const type = node[0];
-        const parameters = node[1] && node[1].parameters;
-        if (type !== 'Node') {
+        const name = node.name;
+        const parameters = node.parameters;
+        if (name !== 'Node') {
+            if (node.operation === 'Function') {
+                return this.executeFunction(name, parameters);
+            }
             const memValue = this.getValueFromMemory(node, this.lastScope());
             if (memValue) {
                 return memValue;
@@ -172,6 +184,9 @@ export class Interpreter {
 
     parseNumber(variable) {
         if (variable === undefined) return variable;
+        if (variable.operation === 'Function') {
+            return this.executeFunction(variable.name, variable.parameters);
+        }
         const memValue = this.getValueFromMemory(variable, this.lastScope());
         if (memValue) {
             return memValue;
@@ -207,11 +222,14 @@ export class Interpreter {
     }
 
     parseBool(op) {
+        if (op.operation === 'Function') {
+            return this.executeFunction(op.name, op.parameters);
+        }
         const memValue = this.getValueFromMemory(op, this.lastScope());
         if (memValue) {
             return memValue;
         }
-        
+
         let value = this.toBoolean(op.value);
         if (value !== undefined) {
             op.value = value;
@@ -232,6 +250,10 @@ export class Interpreter {
         switch (operator) {
             case '||': return this.parseBool(left).value || this.parseBool(right).value;
             case '&&': return this.parseBool(left).value && this.parseBool(right).value;
+            case '<': return this.parseNumber(left).value < this.parseNumber(right).value;
+            case '>': return this.parseNumber(left).value > this.parseNumber(right).value;
+            case '<=': return this.parseNumber(left).value <= this.parseNumber(right).value;
+            case '>=': return this.parseNumber(left).value >= this.parseNumber(right).value;
             case '==':
                 sides = this.getBothSides(left, right);
                 if (sides) {
@@ -298,6 +320,10 @@ export class Interpreter {
         this.sustituteValueInMemory(com.variable, scope, com.value);
     }
 
+    handleReturn(com, type) {
+        return this.typeParse[type](com.value);
+    }
+
     getLastAccess(com) {
         const arr = JSON.parse(JSON.stringify(com.variable instanceof Array ? com.variable : [com.variable]));
         const arrayVar = arr.slice(1);
@@ -305,15 +331,14 @@ export class Interpreter {
     }
 
     handleIf(ifBlock) {
-        const condition = JSON.parse(JSON.stringify(ifBlock.condition));
-        const parsedCondition = this.parseBool(condition);
+        const parsedCondition = this.parseBool(ifBlock.condition);
         if (parsedCondition.value) {
-            this.addScope(ifBlock.block);
+            this.scope.push({});
             this.executeBlock(ifBlock.block);
             this.scope.pop();
         } else {
             if (ifBlock.else) {
-                this.addScope(ifBlock.else);
+                this.scope.push({});
                 this.executeBlock(ifBlock.else);
                 this.scope.pop();
             }
@@ -321,10 +346,9 @@ export class Interpreter {
     }
 
     handleWhile(whileBlock) {
-        this.addScope(whileBlock.block);
+        this.scope.push({});
         while (true) {
-            const condition = JSON.parse(JSON.stringify(whileBlock.condition));
-            const parsedCondition = this.parseBool(condition);
+            const parsedCondition = this.parseBool(whileBlock.condition);
             if (!parsedCondition.value) {
                 this.scope.pop();
                 return;
@@ -344,6 +368,7 @@ export class Interpreter {
                         this.scope[i][arrayVar[0]] = this.typeParse[this.scope[i][arrayVar[0]].type](newValue);
                         return;
                     }
+                    break;
                 }
             }
             if (!ret) {
