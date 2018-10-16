@@ -5,9 +5,40 @@ class BST {
         Node right
     }
     
-    Node root = Node(0);
+    number v = 0;
+    Node root = Node(3);
+    
+    fun clear():void {
+        root = Node(3);
+        v = 0;
+        number t = test();
+    }
+    
+    fun test():number {
+        return 2;
+    }
     
     fun add():void {
-        number n = 20;
+        v = v + 1;
+        addRec(root, v);
+    }
+
+    fun addRec(Node n, number value):void {
+        if (n == null) {
+            return;
+        }
+        if (n.x <= value) {
+            if (n.left == null) {
+                n.left = Node(value);
+            } else {
+                addRec(n.left, value);
+            }
+        } else {
+            if (n.right == null) {
+                n.right = Node(value);
+            } else {
+                addRec(n.right, value);
+            }
+        }
     }
 }
