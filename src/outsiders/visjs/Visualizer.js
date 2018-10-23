@@ -26,7 +26,7 @@ export class Visualizer extends Component {
         const container = document.getElementById('vis-container');
         const options = {
             physics: false,
-            autoResize: false,
+            autoResize: true,
             width: '',
             height: '',
             layout: {
@@ -45,13 +45,14 @@ export class Visualizer extends Component {
 
     async updateNetwork(step) {
         step = step[0];
-        this.nodes = step.nodes;
-        step.nodes = step.nodes.map(node => {
+        const newStep = JSON.parse(JSON.stringify(step));
+        this.nodes = newStep.nodes;
+        newStep.nodes = newStep.nodes.map(node => {
             delete node.prop;
             Object.assign(node, this.nodeColors);
             return node;
         })
-        this.visualizer.setData(step);
+        this.visualizer.setData(newStep);
     }
 
     componentWillUnmount() {
