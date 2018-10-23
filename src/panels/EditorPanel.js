@@ -5,6 +5,7 @@ import { AceEditor } from '../outsiders/ace/Ace';
 import { EditorBar } from '../bars/EditorBar';
 import { Tabs } from '../Tabs';
 import { DocumentationPanel } from './DocumentationPanel';
+import { RuntimePanel } from './Runtime/RuntimePanel';
 
 export class EditorPanel extends Component {
     constructor(props) {
@@ -63,7 +64,7 @@ export class EditorPanel extends Component {
                         />
                     </tab>
                     <tab name='Runtime'>
-                        <div></div>
+                        <RuntimePanel />
                     </tab>
                     <tab name='Documentation'>
                         <DocumentationPanel />

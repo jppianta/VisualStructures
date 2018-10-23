@@ -12,6 +12,8 @@ export class Interpreter {
     constructor() {
         this.events = events.getInstance();
         this.idCount = 0;
+        this.actionList = [];
+        this.currentFunction = '';
     }
 
     hasCode() {
@@ -24,18 +26,22 @@ export class Interpreter {
         this.setGlobal();
     }
 
-    executeFunction(functionName, functionParameters = []) {
+    executeFunction(functionName, functionParameters = [], initial = false) {
         const fun = this.getFunction(functionName);
         if (fun) {
+            this.currentFunction = functionName;
             const scope = fun.parameters ? this.createFunctionScope(fun)(functionParameters) : {};
             this.scope.push(scope);
             const returnValue = this.executeBlock(fun.block, fun.type);
             this.scope.pop();
+            if (initial) {
+                this.events.dispatch('updateHistory', this.actionList);
+            }
             return returnValue;
         }
     }
 
-    executeBlock(block, functionType) {
+    executeBlock(block, functionType,) {
         let returnValue;
         (block || []).some(op => {
             const ope = JSON.parse(JSON.stringify(op));
@@ -61,10 +67,7 @@ export class Interpreter {
                 default: return false;
             }
             const node = this.findGlobalNode();
-            if (node) {
-                const step = this.createStepFromNode(node);
-                this.events.dispatch('newStep', step);
-            }
+            this.addStep(node, ope);
             return false;
         });
         return returnValue;
@@ -98,6 +101,7 @@ export class Interpreter {
 
     clearScope() {
         this.scope = [{}];
+        this.actionList = [];
     }
 
     setGlobal() {
@@ -331,7 +335,8 @@ export class Interpreter {
     }
 
     handleIf(ifBlock) {
-        const parsedCondition = this.parseBool(ifBlock.condition);
+        const condition = JSON.parse(JSON.stringify(ifBlock.condition));
+        const parsedCondition = this.parseBool(condition);
         if (parsedCondition.value) {
             this.scope.push({});
             this.executeBlock(ifBlock.block);
@@ -348,7 +353,8 @@ export class Interpreter {
     handleWhile(whileBlock) {
         this.scope.push({});
         while (true) {
-            const parsedCondition = this.parseBool(whileBlock.condition);
+            const condition = JSON.parse(JSON.stringify(whileBlock.condition));
+            const parsedCondition = this.parseBool(condition);
             if (!parsedCondition.value) {
                 this.scope.pop();
                 return;
@@ -437,6 +443,15 @@ export class Interpreter {
             }
         });
         return ret;
+    }
+
+    addStep(node, op) {
+        if (node) {
+            if (op.operation === 'Attribution' || op.operation === 'Declaration') {
+                const step = Object.assign({ operation: op, functionName: this.currentFunction }, this.createStepFromNode(node));
+                this.actionList.push(step);
+            }
+        }
     }
 
     createStepFromNode(node) {

@@ -38,7 +38,7 @@ export class MainPanel extends Component {
 
     executeFunction = (functionName) => {
         if (this.interpreter.hasCode()) {
-            this.interpreter.executeFunction(functionName);
+            this.interpreter.executeFunction(functionName, [], true);
         }
     }
 

@@ -134,6 +134,51 @@ body {
 
 /* Bars */
 
+.HistoryBar {
+  padding: 10px;
+  height: 10%;
+  min-height: 50px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.HistoryBar .Step {
+  flex-direction: column;
+}
+
+.HistoryBar .Step span {
+  color: #e8ffff;
+}
+
+.HistoryBar .Step .Function {
+  font-size: 12px;
+}
+
+.HistoryBar .Step .Operation {
+  font-size: 14px;
+}
+
+.HistorySteps {
+  border-radius: 5px;
+  border: 1px solid #8bd1cb;
+  width: 70%;
+}
+
+.HistorySteps .HistoryItem {
+  background-color: #e8ffff;
+}
+
+.HistorySteps .Active {
+  background-color: #38908A;
+}
+
+.HistorySteps .HistoryItem:hover {
+  background-color: #8bd1cb;
+}
+
+
+
 .EditorBar {
   height: 10%;
   display: flex;
