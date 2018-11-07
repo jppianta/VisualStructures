@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
+import { events } from '../EventManager';
 
 export class VisualizerBar extends Component {
     constructor(props) {
         super(props);
+
+        this.events = events.getInstance();
 
         this.style = {
             height: '10%',
@@ -29,6 +32,7 @@ export class VisualizerBar extends Component {
     runFunction = () => {
         if (this.state.value !== 'None') {
             this.executeFunction(this.state.value);
+            this.events.dispatch('setTab', 'Runtime');
         }
     }
 

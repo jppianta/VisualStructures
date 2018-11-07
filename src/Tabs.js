@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import { events } from './EventManager';
 
 export class Tabs extends Component {
     constructor(props) {
         super(props);
 
         this.tabs = [];
+
+        this.events = events.getInstance();
+
+        this.events.add('setTab', this.setTab.bind(this));
+
         (props.children || []).forEach(tab => {
             if (tab.type === 'tab') {
                 this.tabs.push({
@@ -20,7 +26,10 @@ export class Tabs extends Component {
 
     onClick = (e) => {
         this.setState({ visibleTab: e.tab });
-        this.render();
+    }
+
+    setTab(tabName) {
+        this.setState({ visibleTab: tabName[0] });
     }
 
     render() {
