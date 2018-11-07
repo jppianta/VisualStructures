@@ -36,6 +36,9 @@ export class Visualizer extends Component {
             }
         }
         this.visualizer = new Network(container, {}, options);
+        this.visualizer.on('click', (properties) => {
+            console.log(properties)
+        });
         const network = container.firstElementChild;
         network.style.backgroundColor = '#1D1F21';
         const canvas = network.firstElementChild;
