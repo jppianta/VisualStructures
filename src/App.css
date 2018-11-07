@@ -8,7 +8,7 @@ body {
 }
 
 .App {
-  background-color: #1D1F21;
+  background-color: #272A2A;
   text-align: center;
   flex: 1;
   display: flex;
@@ -51,7 +51,7 @@ body {
   height: 100%;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
-  color: #1d1f21;
+  color: #272A2A;
   margin-right: 0.5%;
   font-size: 14px;
   font-family: 'Muli', sans-serif;
@@ -62,23 +62,23 @@ body {
 }
 
 .notActive {
-  background-color: #e8ffff;
-  box-shadow: 1px 1px #8bd1cb;
+  background-color: #EEF7F8;
+  box-shadow: 1px 1px #77BDC7;
 }
 
 .active {
-  background-color: #8bd1cb;
-  box-shadow: 1px 1px #e8ffff;
+  background-color: #77BDC7;
+  box-shadow: 1px 1px #EEF7F8;
 }
 
 .TabContents {
   flex: 1;
   display: flex;
   border-bottom-left-radius: 5px;
-  border-top: 2px solid #e5ffff;
-  border-left: 2px solid #e5ffff;
-  border-right: 1px solid #e5ffff;
-  border-bottom: 2px solid #e5ffff;
+  border-top: 2px solid #EEF7F8;
+  border-left: 2px solid #EEF7F8;
+  border-right: 1px solid #EEF7F8;
+  border-bottom: 2px solid #EEF7F8;
 }
 
 .TabContents div {
@@ -109,15 +109,15 @@ body {
 }
 
 .DocumentationPanel h1 {
-  color: #8bd1cb;
+  color: #77BDC7;
 }
 
 .DocumentationPanel h2 {
-  color: #e8ffff;
+  color: #EEF7F8;
 }
 
 .DocumentationPanel p, code {
-  color: white;
+  color: #EEF7F8;
 }
 
 .DocumentationPanel .Code {
@@ -148,7 +148,7 @@ body {
 }
 
 .HistoryBar .Step span {
-  color: #e8ffff;
+  color: #EEF7F8;
 }
 
 .HistoryBar .Step .Function {
@@ -161,12 +161,12 @@ body {
 
 .HistorySteps {
   border-radius: 5px;
-  border: 1px solid #8bd1cb;
+  border: 1px solid #77BDC7;
   width: 70%;
 }
 
 .HistorySteps .HistoryItem {
-  background-color: #e8ffff;
+  background-color: #EEF7F8;
 }
 
 .HistorySteps .Active {
@@ -174,7 +174,7 @@ body {
 }
 
 .HistorySteps .HistoryItem:hover {
-  background-color: #8bd1cb;
+  background-color: #77BDC7;
 }
 
 
@@ -195,7 +195,7 @@ body {
 }
 
 .EditorBar div span {
-  color: #e5ffff;
+  color: #EEF7F8;
 }
 
 .EditorBar .TextDiv {
@@ -224,13 +224,13 @@ body {
 }
 
 .Select {
-  background-color: #e8ffff;
-  color: #1d1f21;
+  background-color: #EEF7F8;
+  color: #272A2A;
   border-radius: 5px;
   font-family: 'Muli', sans-serif;
   margin-right: 1%;
   font-size: 14px;
-  box-shadow: 1px 1px #8bd1cb;
+  box-shadow: 1px 1px #77BDC7;
 }
 
 .Select:focus {
@@ -238,12 +238,12 @@ body {
 }
 
 .RunButton {
-  background-color: #e8ffff;
-  color: #1d1f21;
+  background-color: #EEF7F8;
+  color: #272A2A;
   border-radius: 5px;
   font-family: 'Muli', sans-serif;
   font-size: 14px;
-  box-shadow: 1px 1px #8bd1cb;
+  box-shadow: 1px 1px #77BDC7;
 }
 
 .RunButton:focus {
@@ -261,10 +261,10 @@ body {
   display: flex;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  border-top: 2px solid #e5ffff;
-  border-left: 1px solid #e5ffff;
-  border-right: 2px solid #e5ffff;
-  border-bottom: 2px solid #e5ffff;
+  border-top: 2px solid #EEF7F8;
+  border-left: 1px solid #EEF7F8;
+  border-right: 2px solid #EEF7F8;
+  border-bottom: 2px solid #EEF7F8;
 }
 
 .Visualizer div {
