@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './App.css';
+import './styles/css/index.css';
 import { MainPanel } from './panels/MainPanel';
 import { Header } from './bars/Header';
 
