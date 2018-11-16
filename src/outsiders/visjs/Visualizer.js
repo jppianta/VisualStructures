@@ -37,7 +37,7 @@ export class Visualizer extends Component {
         }
         this.visualizer = new Network(container, {}, options);
         this.visualizer.on('click', (properties) => {
-            console.log(properties)
+            this.events.dispatch('nodeClicked', properties.nodes[0]);
         });
         const network = container.firstElementChild;
         network.style.backgroundColor = '#1D1F21';
