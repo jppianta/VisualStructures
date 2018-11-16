@@ -1,7 +1,16 @@
 {
-  "main.css": "static/css/main.0201c86d.css",
-  "main.css.map": "static/css/main.0201c86d.css.map",
-  "main.js": "static/js/main.19f37fec.js",
-  "main.js.map": "static/js/main.19f37fec.js.map",
-  "static/media/newLogo.svg": "static/media/newLogo.a247b4ce.svg"
+  "main.css": "/VisualStructures/static/css/main.0b13f1de.chunk.css",
+  "main.js": "/VisualStructures/static/js/main.b15a910a.chunk.js",
+  "main.js.map": "/VisualStructures/static/js/main.b15a910a.chunk.js.map",
+  "static/css/1.172c1eed.chunk.css": "/VisualStructures/static/css/1.172c1eed.chunk.css",
+  "static/js/1.698a63ef.chunk.js": "/VisualStructures/static/js/1.698a63ef.chunk.js",
+  "static/js/1.698a63ef.chunk.js.map": "/VisualStructures/static/js/1.698a63ef.chunk.js.map",
+  "runtime~main.js": "/VisualStructures/static/js/runtime~main.f260bf7c.js",
+  "runtime~main.js.map": "/VisualStructures/static/js/runtime~main.f260bf7c.js.map",
+  "static/css/1.172c1eed.chunk.css.map": "/VisualStructures/static/css/1.172c1eed.chunk.css.map",
+  "static/media/newLogo.svg": "/VisualStructures/static/media/newLogo.a247b4ce.svg",
+  "static/css/main.0b13f1de.chunk.css.map": "/VisualStructures/static/css/main.0b13f1de.chunk.css.map",
+  "index.html": "/VisualStructures/index.html",
+  "precache-manifest.49867b93d44163ce43b1faf07ba50369.js": "/VisualStructures/precache-manifest.49867b93d44163ce43b1faf07ba50369.js",
+  "service-worker.js": "/VisualStructures/service-worker.js"
 }
