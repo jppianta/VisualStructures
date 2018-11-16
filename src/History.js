@@ -1,7 +1,7 @@
 import { events } from './EventManager';
 import { Step } from './Step';
 
-export class History {
+class History {
     constructor(al) {
         this.events = events.getInstance();
         this.actionList = al || [];
@@ -45,3 +45,5 @@ export class History {
         this.events.dispatch('newStep', step);
     }
 }
+
+export const stepHistory = new History();
