@@ -1,0 +1,6 @@
+
+{
+    "Linked Lists": {
+        "Double": "class LL {\n\tNode {\n\t\tnumber x,\n\t\tNode next,\n\t\tNode before\n\t}\n\n\tNode root = Node(2);\n\n\tfun add():void {\n\t\tnumber n = 20;\n\t\tNode aux = root;\n\t\twhile (aux.next != null) {\n\t\t\taux = aux.next;\n\t\t}\n\t\tNode v = Node(n);\n\t\tv.before = aux;\n\t\taux.next = v;\n\t}\n}"
+    }
+}

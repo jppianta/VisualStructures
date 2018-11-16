@@ -1,0 +1,28 @@
+.DocumentationPanel {
+    text-align: center;
+    font-family: 'Muli', sans-serif;
+}
+
+.DocumentationPanel h1 {
+    color: #77BDC7;
+}
+
+.DocumentationPanel h2 {
+    color: #EEF7F8;
+}
+
+.DocumentationPanel p, code {
+    color: #EEF7F8;
+}
+
+.DocumentationPanel .Code {
+    display: inline-block;
+}
+
+.DocumentationPanel code {
+    text-align: initial;
+}
+
+.DocumentationPanel pre {
+    text-align: initial;
+}

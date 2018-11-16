@@ -1,0 +1,16 @@
+.VisualizerPanel {
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+}
+
+.filler {
+    height: 23px;
+    display: inline-table;
+}
+
+.VisualizerPanel .container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}

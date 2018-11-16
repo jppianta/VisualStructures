@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { events } from '../../EventManager';
 import { History } from '../../History';
 import { Humanizer } from './Humanizer';
+import { Pagination } from 'antd';
 
 export class HistoryBar extends Component {
     constructor(props) {
@@ -16,44 +17,32 @@ export class HistoryBar extends Component {
         this.humanizer = new Humanizer();
 
         this.state = {
-            items: [],
+            numberOfItems: 0,
             functionName: '',
             stepName: ''
         }
     }
 
-    updateItems(actionList) {
-        return (actionList || []).map((step, idx) => {
-            return (
-                <div key={idx} className={this.history.currentStep === idx ? 'Active' : 'HistoryItem'} onClick={this.onStepClick.bind(this, idx, step)}>
-
-                </div>
-            );
-        });
-    }
-
-    onStepClick(idx, step) {
+    onChange = (idx) => {
+        idx = idx - 1;
         this.history.jumpToStep(idx);
+        const step = this.history.actionList[idx]
         this.setState({
-            functionName: this.history.actionList[idx].functionName,
-            stepName: this.humanizer.humanizeStep(step.operation)
+            functionName: step.functionName,
+            stepName: this.humanizer.humanizeStep(step.operation),
+            numberOfItems: this.state.numberOfItems
         });
         this.updateHistory();
     }
 
     updateHistory(actionList) {
         if (actionList) {
-            this.history.setStepList(actionList[0]);
-            const items = this.updateItems(this.history.actionList);
+            actionList = actionList[0]
+            this.history.setStepList(actionList);
             this.setState({
-                functionName: this.history.actionList[0] ? this.history.actionList[0].functionName : '',
-                stepName: this.history.actionList[0] ? this.humanizer.humanizeStep(this.history.actionList[0].operation) : '',
-                items
-            });
-        } else {
-            const items = this.updateItems(this.history.actionList);
-            this.setState({
-                items
+                functionName: actionList[0] ?actionList[0].functionName : '',
+                stepName: actionList[0] ? this.humanizer.humanizeStep(actionList[0].operation) : '',
+                numberOfItems: actionList.length
             });
         }
     }
@@ -65,9 +54,9 @@ export class HistoryBar extends Component {
                     <span className="Function">{this.state.functionName}</span>
                     <span className="Operation">{this.state.stepName}</span>
                 </div>
-                <div className="HistorySteps">
-                    {this.state.items}
-                </div>
+                {
+                    this.state.numberOfItems > 0 ? <Pagination total={this.state.numberOfItems * 10} onChange={this.onChange} /> : null
+                }
             </div>
         );
     }

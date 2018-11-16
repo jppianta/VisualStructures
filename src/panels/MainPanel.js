@@ -8,18 +8,10 @@ export class MainPanel extends Component {
         super(props);
 
         this.state = {
-            items: [
-                <option key='None' value='None'>None</option>
-            ]
+            items: []
         }
 
         this.interpreter = new Interpreter();
-    }
-
-    defaultItems() {
-        return [
-            <option key='None' value='None'>None</option>
-        ]
     }
 
     updateCode = (code) => {
@@ -29,10 +21,10 @@ export class MainPanel extends Component {
 
     updateItems(items) {
         const newItems = items.map(item => {
-            return <option key={item.name} value={item.name}>{item.name}</option>
+            return item.name
         }); 
         this.setState({
-            items: this.defaultItems().concat(newItems)
+            items: newItems
         });
     }
 

@@ -6,6 +6,7 @@ import { EditorBar } from '../bars/EditorBar';
 import { Tabs } from '../Tabs';
 import { DocumentationPanel } from './DocumentationPanel';
 import { RuntimePanel } from './Runtime/RuntimePanel';
+import { ExamplesPanel } from './ExamplesTab/ExamplesPanel';
 
 export class EditorPanel extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ export class EditorPanel extends Component {
             const parsed = parse(this.text);
             this.updateCode(parsed);
             this.error = 'Compiled!';
+            this.errorLocation = null;
         } catch (err) {
             this.parseErrorMessage(err);
         } finally {
@@ -48,10 +50,10 @@ export class EditorPanel extends Component {
     }
 
     setErrorMessage() {
-        this.setState(state => ({
+        this.setState({
             error: this.error,
             errorLocation: this.errorLocation
-        }));
+        });
     }
 
     render() {
@@ -68,6 +70,9 @@ export class EditorPanel extends Component {
                     </tab>
                     <tab name='Documentation'>
                         <DocumentationPanel />
+                    </tab>
+                    <tab name='Examples'>
+                        <ExamplesPanel />
                     </tab>
                 </Tabs>
                 <EditorBar 

@@ -1,0 +1,223 @@
+.App {
+  background-color: #272A2A;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: flex;
+}
+
+.EditorBar {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Muli", sans-serif;
+  font-size: 14px;
+}
+
+.EditorBar div {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.EditorBar div span {
+  color: #EEF7F8;
+}
+
+.EditorBar .TextDiv {
+  justify-content: flex-start;
+}
+
+.EditorBar .LocationDiv {
+  justify-content: flex-end;
+}
+
+.header {
+  height: 8%;
+  max-height: 80px;
+  margin-top: 15px;
+}
+
+.header img {
+  height: 100%;
+}
+
+.VisualizerBar {
+  height: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.VisualizerBar > button {
+  margin-left: 10px;
+}
+
+.Ace {
+  flex: 1;
+}
+
+.Visualizer {
+  flex: 1;
+  display: flex;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top: 2px solid #EEF7F8;
+  border-left: 1px solid #EEF7F8;
+  border-right: 2px solid #EEF7F8;
+  border-bottom: 2px solid #EEF7F8;
+}
+
+.Visualizer div {
+  flex: 1;
+}
+
+.DocumentationPanel {
+  text-align: center;
+  font-family: "Muli", sans-serif;
+}
+
+.DocumentationPanel h1 {
+  color: #77BDC7;
+}
+
+.DocumentationPanel h2 {
+  color: #EEF7F8;
+}
+
+.DocumentationPanel p, code {
+  color: #EEF7F8;
+}
+
+.DocumentationPanel .Code {
+  display: inline-block;
+}
+
+.DocumentationPanel code {
+  text-align: initial;
+}
+
+.DocumentationPanel pre {
+  text-align: initial;
+}
+
+.EditorPanel {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+}
+
+.MainPanel {
+  display: flex;
+  flex: 1;
+  margin-top: 15px;
+  margin-left: 15px;
+  margin-right: 15px;
+  overflow: hidden;
+}
+
+.MainPanel div {
+  overflow: hidden;
+}
+
+.VisualizerPanel {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+}
+
+.filler {
+  height: 23px;
+  display: inline-table;
+}
+
+.VisualizerPanel .container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.HistoryBar {
+  padding: 10px;
+  min-height: 50px;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.HistoryBar .Step {
+  display: flex;
+  flex-direction: column;
+}
+
+.HistoryBar .Step span {
+  color: #EEF7F8;
+}
+
+.HistoryBar .Step .Function {
+  font-size: 12px;
+}
+
+.HistoryBar .Step .Operation {
+  font-size: 14px;
+}
+
+.RuntimePanel {
+  display: flex;
+  justify-content: center;
+}
+
+.Tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.TabButtons {
+  text-align: initial;
+  height: 5%;
+}
+
+.TabButtons button {
+  height: 100%;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: 0.5%;
+  font-size: 14px;
+}
+
+.TabContents {
+  background-color: #1f2125;
+  flex: 1;
+  display: flex;
+  border-bottom-left-radius: 5px;
+  border-top: 2px solid #EEF7F8;
+  border-left: 2px solid #EEF7F8;
+  border-right: 1px solid #EEF7F8;
+  border-bottom: 2px solid #EEF7F8;
+}
+
+.TabContents > div {
+  flex: 1;
+  display: flex;
+}
+
+.TabContents > div > div {
+  flex: 1;
+}
+
+/*# sourceMappingURL=index.css.map */

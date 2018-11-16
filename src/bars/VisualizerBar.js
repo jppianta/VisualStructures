@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { events } from '../EventManager';
+import { Button, Dropdown, Icon, Menu } from 'antd';
 
 export class VisualizerBar extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ export class VisualizerBar extends Component {
         };
 
         this.state = {
-            value: 'None'
+            selected: null
         }
 
         this.executeFunction = props.executeFunction;
@@ -23,26 +24,56 @@ export class VisualizerBar extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event) {
+    handleChange = ({ key }) => {
         this.setState({
-            value: event.target.value
+            selected: key
         });
     }
 
     runFunction = () => {
-        if (this.state.value !== 'None') {
-            this.executeFunction(this.state.value);
+        if (this.state.selected) {
+            this.executeFunction(this.state.selected);
             this.events.dispatch('setTab', 'Runtime');
         }
+    }
+
+    createMenu = (items) => {
+        return (
+            <Menu onClick={this.handleChange}>
+                {
+                    items.map(item => {
+                        return <Menu.Item key={item}>
+                            <a>
+                                {item}
+                            </a>
+                        </Menu.Item>
+                    })
+                }
+            </Menu>
+        );
     }
 
     render() {
         return (
             <div className="VisualizerBar">
-                <select className="Select" value={this.state.value} onChange={this.handleChange}>
-                    {this.props.items}
-                </select>
-                <button className="RunButton" onClick={this.runFunction.bind(this)}>Run</button>
+                {
+                    this.props.items.length > 0 ?
+                        <Dropdown overlay={this.createMenu(this.props.items)} trigger={['click']}>
+                            {
+                                this.state.selected ?
+                                    <a className="ant-dropdown-link" href="#">
+                                        {this.state.selected} <Icon type="down" />
+                                    </a> :
+                                    <a className="ant-dropdown-link" href="#">
+                                        Functions <Icon type="down" />
+                                    </a>
+                            }
+                        </Dropdown> :
+                        <a className="ant-dropdown-link" href="#">
+                            Functions
+                        </a>
+                }
+                <Button type="primary" onClick={this.runFunction}>Run</Button>
             </div>
         );
     }
