@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { events } from './EventManager';
+import { Button } from 'antd';
 
 export class Tabs extends Component {
     constructor(props) {
@@ -38,7 +39,7 @@ export class Tabs extends Component {
                 <div className='TabButtons' id="tabButtons">
                     {
                         this.tabs.map(tab => {
-                            return <button key={tab.name} className={this.state.visibleTab === tab.name ? 'active' : 'notActive'} onClick={this.onClick.bind(this, { tab: tab.name })}>{tab.name}</button>
+                            return <Button type={this.state.visibleTab === tab.name ? 'primary' : 'default'} key={tab.name} onClick={this.onClick.bind(this, { tab: tab.name })}>{tab.name}</Button>
                         })
                     }
                 </div>
