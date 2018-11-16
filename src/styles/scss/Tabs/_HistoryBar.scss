@@ -8,6 +8,10 @@
     align-items: center;
 }
 
+.HistoryBar > h2 {
+    color: #EEF7F8;
+}
+
 .HistoryBar .Step {
     display: flex;
     flex-direction: column;
@@ -18,9 +22,9 @@
 }
 
 .HistoryBar .Step .Function {
-    font-size: 12px;
+    font-size: 14px;
 }
 
 .HistoryBar .Step .Operation {
-    font-size: 14px;
+    font-size: 16px;
 }
