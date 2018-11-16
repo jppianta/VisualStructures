@@ -1,0 +1,38 @@
+.Tabs {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.TabButtons {
+    text-align: initial;
+    height: 5%;
+}
+
+.TabButtons button {
+    height: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: 0.5%;
+    font-size: 14px;
+}
+
+.TabContents {
+    background-color: #1f2125;
+    flex: 1;
+    display: flex;
+    border-bottom-left-radius: 5px;
+    border-top: 2px solid #EEF7F8;
+    border-left: 2px solid #EEF7F8;
+    border-right: 1px solid #EEF7F8;
+    border-bottom: 2px solid #EEF7F8;
+}
+
+.TabContents > div {
+    flex: 1;
+    display: flex;
+}
+
+.TabContents > div > div {
+    flex: 1;
+}

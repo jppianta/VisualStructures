@@ -50,12 +50,10 @@ body {
 
 .TabButtons button {
   height: 100%;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  color: #272A2A;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   margin-right: 0.5%;
   font-size: 14px;
-  font-family: "Muli", sans-serif;
 }
 
 .TabButtons button:focus {
@@ -73,6 +71,7 @@ body {
 }
 
 .TabContents {
+  background-color: #1f2125;
   flex: 1;
   display: flex;
   border-bottom-left-radius: 5px;
@@ -82,9 +81,13 @@ body {
   border-bottom: 2px solid #EEF7F8;
 }
 
-.TabContents div {
+.TabContents > div {
   flex: 1;
   display: flex;
+}
+
+.TabContents > div > div {
+  flex: 1;
 }
 
 .VisualizerPanel {
@@ -134,16 +137,23 @@ body {
 }
 
 /* Bars */
+.HistoryPanel {
+  display: flex;
+  justify-content: center;
+}
+
 .HistoryBar {
   padding: 10px;
-  height: 10%;
   min-height: 50px;
+  display: flex;
+  flex: 1;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .HistoryBar .Step {
+  display: flex;
   flex-direction: column;
 }
 
@@ -219,6 +229,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.VisualizerBar > button {
+  margin-left: 10px;
 }
 
 .Select {

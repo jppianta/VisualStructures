@@ -1,0 +1,14 @@
+.Visualizer {
+  flex: 1;
+  display: flex;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top: 2px solid #EEF7F8;
+  border-left: 1px solid #EEF7F8;
+  border-right: 2px solid #EEF7F8;
+  border-bottom: 2px solid #EEF7F8;
+}
+
+.Visualizer div {
+  flex: 1;
+}

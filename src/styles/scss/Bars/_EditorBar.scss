@@ -1,0 +1,26 @@
+.EditorBar {
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Muli', sans-serif;
+    font-size: 14px;
+}
+
+.EditorBar div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
+.EditorBar div span {
+    color: #EEF7F8;
+}
+
+.EditorBar .TextDiv {
+    justify-content: flex-start;
+}
+
+.EditorBar .LocationDiv {
+    justify-content: flex-end;
+}

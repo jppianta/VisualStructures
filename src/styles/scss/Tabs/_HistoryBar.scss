@@ -1,0 +1,26 @@
+.HistoryBar {
+    padding: 10px;
+    min-height: 50px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.HistoryBar .Step {
+    display: flex;
+    flex-direction: column;
+}
+
+.HistoryBar .Step span {
+    color: #EEF7F8;
+}
+
+.HistoryBar .Step .Function {
+    font-size: 12px;
+}
+
+.HistoryBar .Step .Operation {
+    font-size: 14px;
+}
