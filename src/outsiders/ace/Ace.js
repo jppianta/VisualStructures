@@ -7,10 +7,18 @@ export class AceEditor extends Component {
         super(props);
 
         this.events = events.getInstance();
+        this.events.add('setCode', this.setCode);
 
         this.editor = undefined;
         this.text = '';
         this.panelCallback = props.panelCallback;
+    }
+
+    setCode = (code) => {
+        code = code[0];
+        if (this.editor) {
+            this.editor.getSession().setValue(code);
+        }
     }
 
     componentDidMount() {
