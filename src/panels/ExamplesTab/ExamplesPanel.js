@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Menu } from 'antd';
+import { Menu, Popconfirm, message } from 'antd';
 import SubMenu from 'antd/lib/menu/SubMenu';
 import { events } from '../../EventManager.js';
 
@@ -12,24 +12,38 @@ export class ExamplesPanel extends Component {
         this.events = events.getInstance();
     }
 
-    onClick = ({key}) => {
+    onClick = ({ key }) => {
         const path = key.split('/');
         const text = path.reduce((current, key) => current[key], examples);
         this.events.dispatch('setCode', text);
         this.events.dispatch('setTab', 'Code');
     }
 
+    confirm = (key) => {
+        const path = key.split('/');
+        const text = path.reduce((current, key) => current[key], examples);
+        this.events.dispatch('setCode', text);
+        this.events.dispatch('setTab', 'Code');
+        message.success(`${path[path.length - 1]} loaded`);
+    }
+
     parseExaples() {
         const types = Object.keys(examples);
         return (
-            <Menu mode='inline' onClick={this.onClick}>
+            <Menu mode='inline' theme='dark'>
                 {
                     types.map(key => {
                         return (
                             <SubMenu key={key} title={key}>
                                 {
                                     Object.keys(examples[key]).map(subKey => {
-                                        return <Menu.Item key={key+'/'+subKey}>{subKey}</Menu.Item>
+                                        return (
+                                            <Menu.Item key={key + '/' + subKey}>
+                                                <Popconfirm title="Are you sure you want to overwrite the editor?" onConfirm={this.confirm.bind(this, key + '/' + subKey)} okText="Yes" cancelText="No">
+                                                    <a href="#">{subKey}</a>
+                                                </Popconfirm>
+                                            </Menu.Item>
+                                        );
                                     })
                                 }
                             </SubMenu>
