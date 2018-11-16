@@ -159,6 +159,10 @@ body {
   align-items: center;
 }
 
+.HistoryBar > h2 {
+  color: #EEF7F8;
+}
+
 .HistoryBar .Step {
   display: flex;
   flex-direction: column;
@@ -169,16 +173,33 @@ body {
 }
 
 .HistoryBar .Step .Function {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .HistoryBar .Step .Operation {
-  font-size: 14px;
+  font-size: 16px;
+}
+
+.InfoPanel {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.InfoPanel > h2 {
+  color: #EEF7F8;
+}
+
+.InfoPanel > div {
+  flex: 1;
+  max-height: 100%;
 }
 
 .RuntimePanel {
   display: flex;
   justify-content: center;
+  flex-direction: column;
 }
 
 .Tabs {
