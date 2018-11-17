@@ -11,14 +11,23 @@ export class HistoryBar extends Component {
         this.events = events.getInstance();
 
         this.events.add('updateHistory', this.updateHistory.bind(this));
+        this.events.add('setTheme', this.setTheme)
 
         this.humanizer = new Humanizer();
 
         this.state = {
             numberOfItems: 0,
             functionName: '',
-            stepName: ''
+            stepName: '',
+            theme: 'lightText'
         }
+    }
+
+    setTheme = (theme) => {
+        theme = theme[0];
+        const currentState = Object.assign({}, this.state);
+        currentState.theme = (theme === 'dark' ? 'lightText' : 'darkText')
+        this.setState(currentState);
     }
 
     onChange = (idx) => {
@@ -48,7 +57,7 @@ export class HistoryBar extends Component {
     render() {
         return (
             this.state.numberOfItems > 0 ?
-                <div className="HistoryBar">
+                <div className={`HistoryBar ${this.state.theme}`}>
                     <h2>Steps</h2>
                     <div className="Step">
                         <span className="Function">{this.state.functionName}</span>

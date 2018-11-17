@@ -10,15 +10,39 @@ export class Visualizer extends Component {
 
         this.events.add('newStep', this.updateNetwork.bind(this));
 
+        this.events.add('setTheme', this.setBG);
+
         this.visualizer = undefined;
 
+        this.background = '#1f2125';
+
+        this.network = null;
+
         this.nodes = [];
+
+        this.state = {
+            theme: 'VisualizerLightBorder'
+        }
 
         this.nodeColors = {
             color: {
                 background: '#e5ffff',
                 border: '#80cbc4'
             }
+        }
+    }
+
+    setBG = (theme) => {
+        theme = theme[0];
+        if (this.network) {
+            if (theme === 'dark') {
+                this.background = '#1f2125';
+                this.setState({ theme: 'VisualizerLightBorder' });
+            } else {
+                this.background = 'white';
+                this.setState({ theme: 'VisualizerDarkBorder' });
+            }
+            this.network.style.backgroundColor = this.background;
         }
     }
 
@@ -39,9 +63,9 @@ export class Visualizer extends Component {
         this.visualizer.on('click', (properties) => {
             this.events.dispatch('nodeClicked', properties.nodes[0]);
         });
-        const network = container.firstElementChild;
-        network.style.backgroundColor = '#1D1F21';
-        const canvas = network.firstElementChild;
+        this.network = container.firstElementChild;
+        this.network.style.backgroundColor = this.background;
+        const canvas = this.network.firstElementChild;
         canvas.height = '';
         canvas.width = '';
     }
@@ -66,7 +90,7 @@ export class Visualizer extends Component {
 
     render() {
         return (
-            <div id='vis-container' className="Visualizer"></div>
+            <div id='vis-container' className={`Visualizer ${this.state.theme}`}></div>
         );
     }
 }

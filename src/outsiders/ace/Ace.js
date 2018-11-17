@@ -9,9 +9,22 @@ export class AceEditor extends Component {
         this.events = events.getInstance();
         this.events.add('setCode', this.setCode);
 
+        this.events.add('setTheme', this.setTheme);
+
         this.editor = undefined;
         this.text = '';
         this.panelCallback = props.panelCallback;
+    }
+
+    setTheme = (theme) => {
+        theme = theme[0];
+        if (this.editor) {
+            if (theme === 'dark') {
+                this.editor.setTheme('ace/theme/tomorrow_night');
+            } else {
+                this.editor.setTheme('ace/theme/tomorrow');
+            }
+        }
     }
 
     setCode = (code) => {

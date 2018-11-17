@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { events } from '../EventManager';
-import { Button, Dropdown, Icon, Menu } from 'antd';
+import { Button, Dropdown, Icon, Menu, notification } from 'antd';
 
 export class VisualizerBar extends Component {
     constructor(props) {
@@ -30,10 +30,27 @@ export class VisualizerBar extends Component {
         });
     }
 
+    openNotification = () => {
+        notification.config({
+            placement: 'topLeft',
+            duration: 1.5
+        });
+
+        notification.open({
+            message: 'Please, select a function',
+            style: {
+                width: 300,
+                marginRight: 335 - 300,
+            },
+        });
+    };
+
     runFunction = () => {
         if (this.state.selected) {
             this.executeFunction(this.state.selected);
             this.events.dispatch('setTab', 'Runtime');
+        } else {
+            this.openNotification();
         }
     }
 

@@ -10,6 +10,20 @@ export class ExamplesPanel extends Component {
         super(props);
 
         this.events = events.getInstance();
+
+        this.events.add('setTheme', this.setTheme);
+
+        this.menuTheme = 'dark'
+
+        this.state = {
+            menu: this.parseExaples()
+        }
+    }
+
+    setTheme = (theme) => {
+        theme = theme[0];
+        this.menuTheme = theme;
+        this.setState({ menu: this.parseExaples() })
     }
 
     onClick = ({ key }) => {
@@ -30,7 +44,7 @@ export class ExamplesPanel extends Component {
     parseExaples() {
         const types = Object.keys(examples);
         return (
-            <Menu mode='inline' theme='dark'>
+            <Menu mode='inline' theme={this.menuTheme}>
                 {
                     types.map(key => {
                         return (
@@ -55,6 +69,6 @@ export class ExamplesPanel extends Component {
     }
 
     render() {
-        return this.parseExaples();
+        return this.state.menu;
     }
 }

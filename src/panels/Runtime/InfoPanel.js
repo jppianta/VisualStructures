@@ -11,13 +11,28 @@ export class InfoPanel extends Component {
         this.events = events.getInstance();
 
         this.events.add('nodeClicked', this.onNodeClick);
+        this.events.add('setTheme', this.setTheme)
 
         this.info = {};
 
 
         this.state = {
-            menu: null
+            menu: null,
+            theme: 'lightText'
         }
+
+        this.menuTheme = 'dark'
+    }
+
+    setTheme = (theme) => {
+        theme = theme[0];
+        this.menuTheme = theme;
+        const currentState = Object.assign({}, this.state);
+        currentState.theme = (theme === 'dark' ? 'lightText' : 'darkText')
+        if (this.state.menu) {
+            currentState.menu = this.createMenu();
+        }
+        this.setState(currentState);
     }
 
     createStructure(info, initial) {
@@ -49,7 +64,7 @@ export class InfoPanel extends Component {
             this.info = this.createStructure(info, initial);
         }
         return (
-            <Menu theme='dark' mode='inline'>
+            <Menu theme={this.menuTheme} mode='inline'>
                 {
                     Object.keys(this.info).map(key => {
                         if (typeof this.info[key] === 'function' || this.info[key] instanceof Object) {
@@ -81,20 +96,20 @@ export class InfoPanel extends Component {
         const path = name.split('/');
         const title = path[path.length - 1];
         return (
-            typeof info === 'function' ? 
-            <SubMenu key={name} title={title} onTitleClick={this.handleClick.bind(this, name)} /> :
-            <SubMenu key={name} title={title} >
-                {
-                    Object.keys(info).map(key => {
-                        if (typeof info[key] === 'function' || info[key] instanceof Object) {
-                            return this.createSubMenu(`${name}/${key}`, info[key]);
-                        } else {
-                            const val = `${key}: ${info[key]}`
-                            return <Menu.Item key={val}>{val}</Menu.Item>
-                        }
-                    })
-                }
-            </SubMenu>
+            typeof info === 'function' ?
+                <SubMenu key={name} title={title} onTitleClick={this.handleClick.bind(this, name)} /> :
+                <SubMenu key={name} title={title} >
+                    {
+                        Object.keys(info).map(key => {
+                            if (typeof info[key] === 'function' || info[key] instanceof Object) {
+                                return this.createSubMenu(`${name}/${key}`, info[key]);
+                            } else {
+                                const val = `${key}: ${info[key]}`
+                                return <Menu.Item key={val}>{val}</Menu.Item>
+                            }
+                        })
+                    }
+                </SubMenu>
         );
     }
 
@@ -117,15 +132,16 @@ export class InfoPanel extends Component {
     render() {
         return (
             this.state.menu ?
-            <div className="InfoPanel">
-                <h2>Node Info</h2>
-                <div style={{overflowY: 'auto'}}>
-                    {
-                        this.state.menu
-                    }
-                </div>
-            </div> :
-            null
+
+                <div className={`InfoPanel ${this.state.theme}`}>
+                    <h2>Node Info</h2>
+                    <div style={{ overflowY: 'auto' }}>
+                        {
+                            this.state.menu
+                        }
+                    </div>
+                </div> :
+                null
         );
     }
 }
