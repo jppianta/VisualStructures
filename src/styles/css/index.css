@@ -1,5 +1,4 @@
 .App {
-  background-color: #272A2A;
   text-align: center;
   flex: 1;
   display: flex;
@@ -17,6 +16,22 @@ body {
   display: flex;
 }
 
+.dark {
+  background-color: #1f2125;
+}
+
+.light {
+  background-color: white;
+}
+
+.darkText p, .darkText label, .darkText h2, .darkText code, .darkText span {
+  color: #1f2125;
+}
+
+.lightText p, .lightText label, .lightText h2, .lightText code, .lightText span {
+  color: white;
+}
+
 .EditorBar {
   height: 10%;
   display: flex;
@@ -30,10 +45,6 @@ body {
   flex: 1;
   display: flex;
   align-items: center;
-}
-
-.EditorBar div span {
-  color: #EEF7F8;
 }
 
 .EditorBar .TextDiv {
@@ -52,6 +63,12 @@ body {
 
 .header img {
   height: 100%;
+}
+
+.header > button {
+  position: absolute;
+  right: 4%;
+  top: 4%;
 }
 
 .VisualizerBar {
@@ -74,10 +91,20 @@ body {
   display: flex;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+}
+
+.VisualizerLightBorder {
   border-top: 2px solid #EEF7F8;
   border-left: 1px solid #EEF7F8;
   border-right: 2px solid #EEF7F8;
   border-bottom: 2px solid #EEF7F8;
+}
+
+.VisualizerDarkBorder {
+  border-top: 2px solid #77BDC7;
+  border-left: 1px solid #77BDC7;
+  border-right: 2px solid #77BDC7;
+  border-bottom: 2px solid #77BDC7;
 }
 
 .Visualizer div {
@@ -91,14 +118,6 @@ body {
 
 .DocumentationPanel h1 {
   color: #77BDC7;
-}
-
-.DocumentationPanel h2 {
-  color: #EEF7F8;
-}
-
-.DocumentationPanel p, code {
-  color: #EEF7F8;
 }
 
 .DocumentationPanel .Code {
@@ -159,17 +178,9 @@ body {
   align-items: center;
 }
 
-.HistoryBar > h2 {
-  color: #EEF7F8;
-}
-
 .HistoryBar .Step {
   display: flex;
   flex-direction: column;
-}
-
-.HistoryBar .Step span {
-  color: #EEF7F8;
 }
 
 .HistoryBar .Step .Function {
@@ -185,10 +196,6 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-}
-
-.InfoPanel > h2 {
-  color: #EEF7F8;
 }
 
 .InfoPanel > div {
@@ -222,14 +229,23 @@ body {
 }
 
 .TabContents {
-  background-color: #1f2125;
   flex: 1;
   display: flex;
   border-bottom-left-radius: 5px;
+}
+
+.TabContentsLightBorder {
   border-top: 2px solid #EEF7F8;
   border-left: 2px solid #EEF7F8;
   border-right: 1px solid #EEF7F8;
   border-bottom: 2px solid #EEF7F8;
+}
+
+.TabContentsDarkBorder {
+  border-top: 2px solid #77BDC7;
+  border-left: 2px solid #77BDC7;
+  border-right: 1px solid #77BDC7;
+  border-bottom: 2px solid #77BDC7;
 }
 
 .TabContents > div {

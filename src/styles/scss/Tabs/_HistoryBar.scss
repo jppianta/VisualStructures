@@ -8,17 +8,9 @@
     align-items: center;
 }
 
-.HistoryBar > h2 {
-    color: #EEF7F8;
-}
-
 .HistoryBar .Step {
     display: flex;
     flex-direction: column;
-}
-
-.HistoryBar .Step span {
-    color: #EEF7F8;
 }
 
 .HistoryBar .Step .Function {

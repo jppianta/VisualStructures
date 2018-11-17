@@ -1,0 +1,20 @@
+.dark {
+    background-color: #1f2125;
+}
+
+.light {
+    background-color: white;
+}
+
+.darkText {
+    p, label, h2, code, span {
+        color: #1f2125;
+    }
+
+}
+
+.lightText {
+    p, label, h2, code, span {
+        color: white;
+    }
+}
