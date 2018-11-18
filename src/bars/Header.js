@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import newLogo from '../images/newLogo.svg';
 import darkLogo from '../images/darkLogo.svg';
 import { events } from '../EventManager';
+import { Tutorial, destroyTutorial, renderTutorial } from '../Tutorial';
 import { Switch } from 'antd';
 
 export class Header extends Component {
@@ -12,16 +13,21 @@ export class Header extends Component {
 
         this.events.add('setTheme', this.setLogo);
 
+        this.events.add('step0', renderTutorial.bind(this, this));
+
+        this.events.add('closeActive', destroyTutorial.bind(this, this));
+
         this.state = {
-            logo: newLogo
+            logo: newLogo,
+            tutorialActive: ''
         }
     }
 
     setLogo = (theme) => {
         theme = theme[0];
-        this.setState({
-            logo: theme === 'dark' ? newLogo : darkLogo
-        });
+        const currentState = Object.assign({}, this.state);
+        currentState.theme = theme === 'dark' ? newLogo : darkLogo
+        this.setState(currentState);
     }
 
     changeMode = (checked) => {
@@ -33,7 +39,8 @@ export class Header extends Component {
         return (
             <div className='header'>
                 <img src={this.state.logo} alt=''></img>
-                <Switch checkedChildren="Light" unCheckedChildren="Dark" onChange={this.changeMode} />
+                <Tutorial />
+                <Switch className={this.state.tutorialActive} checkedChildren="Light" unCheckedChildren="Dark" onChange={this.changeMode} />
             </div>
         );
     }

@@ -14,7 +14,9 @@ export class EditorPanel extends Component {
 
         this.events = events.getInstance();
         this.events.add('textChanged', this.textChanged);
+
         this.text = '';
+
         this.error = undefined;
         this.errorLocation = undefined;
 
@@ -36,6 +38,7 @@ export class EditorPanel extends Component {
             this.updateCode(parsed);
             this.error = 'Compiled!';
             this.errorLocation = null;
+            window.localStorage.setItem('code', this.text);
         } catch (err) {
             this.parseErrorMessage(err);
         } finally {

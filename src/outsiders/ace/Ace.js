@@ -12,7 +12,6 @@ export class AceEditor extends Component {
         this.events.add('setTheme', this.setTheme);
 
         this.editor = undefined;
-        this.text = '';
         this.panelCallback = props.panelCallback;
     }
 
@@ -44,10 +43,17 @@ export class AceEditor extends Component {
             fontFamily: 'monaco, monospace',
             showPrintMargin: false
         });
-        // this.editor.getSession().setMode('ace/mode/javascript');
         this.editor.getSession().on('change', (e) => {
             this.panelCallback(this.editor.getSession().getValue());
         });
+        this.loadText();
+    }
+
+    loadText() {
+        const currentText = window.localStorage.getItem('code');
+        if (currentText) {
+            this.setCode([currentText]);
+        }
     }
 
     render() {
