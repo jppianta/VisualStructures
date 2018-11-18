@@ -12,6 +12,8 @@ export class Tabs extends Component {
 
         this.events.add('setTab', this.setTab.bind(this));
 
+        this.events.add('setTheme', this.setTheme);
+
         (props.children || []).forEach(tab => {
             if (tab.type === 'tab') {
                 this.tabs.push({
@@ -21,7 +23,8 @@ export class Tabs extends Component {
             }
         });
         this.state = {
-            visibleTab: this.tabs.length && this.tabs[0].name
+            visibleTab: this.tabs.length && this.tabs[0].name,
+            theme: 'dark TabContentsLightBorder'
         }
     }
 
@@ -31,6 +34,13 @@ export class Tabs extends Component {
 
     setTab(tabName) {
         this.setState({ visibleTab: tabName[0] });
+    }
+
+    setTheme = (theme) => {
+        theme=theme[0];
+        const currentState = Object.assign({}, this.state);
+        currentState.theme = theme + ' ' + (theme === 'dark' ? 'TabContentsLightBorder' : 'TabContentsDarkBorder');
+        this.setState(currentState);
     }
 
     render() {
@@ -43,7 +53,7 @@ export class Tabs extends Component {
                         })
                     }
                 </div>
-                <div className='TabContents'>
+                <div className={`TabContents ${this.state.theme}`}>
                     {
                         this.tabs.map(tab => {
                             return (

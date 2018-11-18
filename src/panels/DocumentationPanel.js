@@ -1,9 +1,30 @@
 import React, { Component } from 'react';
+import { events } from '../EventManager';
 
 export class DocumentationPanel extends Component {
+    constructor(props) {
+        super(props);
+
+        this.events = events.getInstance();
+
+        this.events.add('setTheme', this.setTheme);
+
+        this.state = {
+            theme: 'lightText'
+        }
+    }
+
+    setTheme = (theme) => {
+        theme = theme[0];
+        this.setState({
+            theme: (theme === 'dark' ? 'lightText' : 'darkText')
+        });
+    }
+
+
     render() {
         return (
-            <div className="DocumentationPanel" style={{display: 'block', overflowY: 'auto'}}>
+            <div className={`DocumentationPanel ${this.state.theme}`} style={{ display: 'block', overflowY: 'auto' }}>
                 <h1>VsLang</h1>
                 <h2>Class</h2>
                 <p>
@@ -19,7 +40,7 @@ export class DocumentationPanel extends Component {
                 </div>
                 <h2>Node</h2>
                 <p>
-                    The Node is a must have on every class because the ideia of the language is to work around data structures, and the best way to control data in data structures is with nodes. 
+                    The Node is a must have on every class because the ideia of the language is to work around data structures, and the best way to control data in data structures is with nodes.
                     The way you define a Node is the same way you define parameters, type of the property followed by the name of the property. An example of a Node would be
 
                 </p>
@@ -58,7 +79,7 @@ export class DocumentationPanel extends Component {
                 <h2>Function</h2>
                 <p>
                     Functions are declared using the word 'fun', followed by its name and the parameters inside braces, followed by ':' and its return type.
-                    The code of the function comes next inside curly braces. Just like this 
+                    The code of the function comes next inside curly braces. Just like this
                 </p>
                 <div className="Code">
                     <pre>
@@ -78,7 +99,7 @@ export class DocumentationPanel extends Component {
                     </pre>
                 </div>
                 <p>
-                    Preety cool, huh? And as you select the add function on the visualizer bar and press Run, you will see the root node being drawn. 
+                    Preety cool, huh? And as you select the add function on the visualizer bar and press Run, you will see the root node being drawn.
                     Remender, the first node declared will be the the one vizualied. At least for now.
                 </p>
             </div>

@@ -4,7 +4,9 @@ class EventManager {
     events = {};
 
     add = (name, callback) => {
-        events[name] = new Signal();
+        if (!events[name]) {
+            events[name] = new Signal();
+        }
         events[name].add(callback);
     }
 
