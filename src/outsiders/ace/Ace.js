@@ -41,7 +41,7 @@ export class AceEditor extends Component {
         this.editor.getSession().setUseWorker(false);
         this.editor.getSession().setTabSize(4);
         this.editor.setOptions({
-            fontFamily: 'monaco',
+            fontFamily: 'monaco, monospace',
             showPrintMargin: false
         });
         // this.editor.getSession().setMode('ace/mode/javascript');
