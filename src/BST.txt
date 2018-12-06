@@ -1,6 +1,6 @@
 class BST {
     Node {
-        number x,
+        number value,
         Node left,
         Node right
     }
@@ -11,11 +11,6 @@ class BST {
     fun clear():void {
         root = Node(3);
         v = 0;
-        number t = test();
-    }
-    
-    fun test():number {
-        return 2;
     }
     
     fun add():void {
@@ -23,21 +18,21 @@ class BST {
         addRec(root, v);
     }
 
-    fun addRec(Node n, number value):void {
+    fun addRec(Node n, number val):void {
         if (n == null) {
             return;
         }
-        if (n.x <= value) {
+        if (n.value <= val) {
             if (n.left == null) {
-                n.left = Node(value);
+                n.left = Node(val);
             } else {
-                addRec(n.left, value);
+                addRec(n.left, val);
             }
         } else {
             if (n.right == null) {
-                n.right = Node(value);
+                n.right = Node(val);
             } else {
-                addRec(n.right, value);
+                addRec(n.right, val);
             }
         }
     }

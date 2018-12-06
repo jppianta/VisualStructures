@@ -1,6 +1,9 @@
 
 {
     "Linked Lists": {
-        "Double": "class LL {\n\tNode {\n\t\tnumber x,\n\t\tNode next,\n\t\tNode before\n\t}\n\n\tNode root = Node(2);\n\n\tfun add():void {\n\t\tnumber n = 20;\n\t\tNode aux = root;\n\t\twhile (aux.next != null) {\n\t\t\taux = aux.next;\n\t\t}\n\t\tNode v = Node(n);\n\t\tv.before = aux;\n\t\taux.next = v;\n\t}\n}"
+        "Double": "class LL {\n\tNode {\n\t\tnumber value,\n\t\tNode next,\n\t\tNode before\n\t}\n\n\tNode root = Node(2);\n\n\tfun add():void {\n\t\tnumber n = 20;\n\t\tNode aux = root;\n\t\twhile (aux.next != null) {\n\t\t\taux = aux.next;\n\t\t}\n\t\tNode v = Node(n);\n\t\tv.before = aux;\n\t\taux.next = v;\n\t}\n}"
+    },
+    "Tree": {
+        "BST": "class BST {\n\tNode {\n\t\tnumber value,\n\t\tNode left,\n\t\tNode right\n\t}\n\n\tnumber v = 0;\n\tNode root = Node(3);\n\n\tfun clear():void {\n\t\troot = Node(3);\n\t\tv = 0;\n\t}\n\n\tfun add():void {\n\t\tv = v + 1;\n\t\taddRec(root, v);\n\t}\n\n\tfun addRec(Node n, number val): void {\n\t\tif (n == null) {\n\t\t\treturn;\n\t\t}\n\t\tif (n.value <= val) {\n\t\t\tif (n.left == null) {\n\t\t\t\tn.left = Node(val);\n\t\t\t} else {\n\t\t\t\taddRec(n.left, val);\n\t\t\t}\n\t\t} else {\n\t\t\tif (n.right == null) {\n\t\t\t\tn.right = Node(val);\n\t\t\t} else {\n\t\t\t\taddRec(n.right, val);\n\t\t\t}\n\t\t}\n\t}\n}"
     }
 }

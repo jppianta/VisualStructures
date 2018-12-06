@@ -85,7 +85,7 @@ export class Visualizer extends Component {
     componentWillUnmount() {
         this.visualizer.destroy();
         this.visualizer = null;
-        this.events.destroy('newStep', this.updateNetwork);
+        this.events.remove('newStep', this.updateNetwork);
     }
 
     render() {

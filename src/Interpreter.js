@@ -468,7 +468,8 @@ export class Interpreter {
         if (node.$been !== undefined) return {
             id: node.$been
         };
-        data.nodes.push({ id, label: String(id), prop: node.value, level });
+        const possibleValue = node.value && node.value.value && node.value.value.value;
+        data.nodes.push({ id, label: String(possibleValue || id), prop: node.value, level });
         node.$been = id;
         const keys = Object.keys(node.value);
         let next;

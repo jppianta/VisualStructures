@@ -12,7 +12,7 @@ PlusMinus = '+' / '-'
 
 MultDiv = '*' / '/'
 
-Expression = left:B _ op:Relational _ right:B {
+Expression = left:B _ op:Relational _ right:Expression {
 	return {
         type: 'bool',
     	operation: op,
@@ -81,7 +81,7 @@ Commands = cHead:(LineCommand / BlockCommand) cTail:(_ (LineCommand / BlockComma
     }));
 }
 
-Declaration = type:(Type) _1 vari:Id _ "=" _ value:Expression {
+Declaration = type:(Type) _ vari:Id _ "=" _ value:Expression {
 	return {
         operation: "Declaration",
         variable: vari,
@@ -98,7 +98,7 @@ Attribution = vari:IdRS _ '=' _ value:Expression {
     }
 }
 
-Return = 'return' value:(_1 Expression)? {
+Return = 'return' value:(_ Expression)? {
     return {
         operation: 'Return',
         value: value && value[1]
@@ -185,8 +185,6 @@ Number = ch:OneNumber+ {
 
 _ "whitespace"
   = [ \t\n\r]*
-              
-_1 = [ \t\n\r]+
 
 Bool = b:("true" / "false") {
 	return {
@@ -199,7 +197,7 @@ Condition = '(' _ b: Expression _ ')' {
 	return b;
 }
 
-Var = t:Type v:("[]")? _1 i:Id {
+Var = t:Type v:("[]")? _ i:Id {
 	return [i,t+(v ? v : "")]
 }
 
@@ -233,7 +231,7 @@ While = "while" _ c:Condition _ f:FunctionBlock {
 
 FunctionBlock = '{' _ c:Commands? _ '}' { return c; }
 
-Function = "fun" _1 i:Id _ '(' _ p:Parameters? _ ')' _ ':' _ t:Type _ f:FunctionBlock {
+Function = "fun" _ i:Id _ '(' _ p:Parameters? _ ')' _ ':' _ t:Type _ f:FunctionBlock {
 	return {
     	operation: "function",
         name: i,
