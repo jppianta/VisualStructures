@@ -44,7 +44,7 @@ export class ExamplesPanel extends Component {
     parseExaples() {
         const types = Object.keys(examples);
         return (
-            <Menu mode='inline' theme={this.menuTheme}>
+            <Menu mode='inline' theme={this.menuTheme} className="step1">
                 {
                     types.map(key => {
                         return (
