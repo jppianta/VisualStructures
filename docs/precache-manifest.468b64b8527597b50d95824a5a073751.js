@@ -28,7 +28,7 @@ self.__precacheManifest = [
     "url": "/VisualStructures/static/css/1.32597b23.chunk.css"
   },
   {
-    "revision": "a426bfaf696016de7e4b87d512610384",
+    "revision": "c688f43058b1206815d7d9f97a50c0b0",
     "url": "/VisualStructures/index.html"
   }
 ];
